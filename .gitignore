@@ -1,0 +1,11 @@
+*.pyc
+*.tcl
+*.msg
+*.gif
+*.eps
+*.terms
+libs_gunny/.idea/
+BootStrapper/w9xpopen.exe
+BootStrapper/tcl/
+BootStrapper/build/
+BootStrapper/.idea/

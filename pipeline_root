@@ -1,0 +1,6 @@
+This is a Gunny Pipeline root marker
+
+Gunny bootstrapper can walk the file tree,
+to find this file as a reference point for
+
+\pipeline
