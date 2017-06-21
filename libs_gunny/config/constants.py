@@ -56,6 +56,7 @@ ENVAR_COMPANY = str('GUNNY_COMPANY')
 # ENVAR_MP_DEBUG = str('MP_DEBUG')
 
 # Config keys
+DESC_ENVAR = str('env_variables')
 DESC_CONFIG_INFO = str('info')
 DESC_CONFIG_PROPERTIES = str('properties')
 DESC_CONFIG_GUNNY = str('Gunny')
@@ -86,6 +87,7 @@ BOOTSTRAP_FILE = str('startScriptVal')
 APP_ROOT_TYPE = str('appRoot')
 APP_CONFIG_PATH = str('appConfigPath')
 APP_VERSION = str('appVersion')
+APP_ID = str('appguid')
 APP_PY_PACKAGES = str('appPyPackage')
 
 # Parser qualifiers. Blocks mapped to these indices have a special case association.
@@ -111,6 +113,8 @@ MAX_PLUGIN_PATH = str('MAX_PLUGIN_PATH')
 # BLENDER Custom Config Keys
 
 # Config Values
+STR_2018 = str('2018')
+STR_2017 = str('2017')
 STR_2016 = str('2016')
 STR_2015 = str('2015')
 STR_2014 = str('2014')
@@ -129,15 +133,23 @@ MAYA_RELATIVE_EXE_PATH = str('bin\\maya.exe')
 MAYA_SETUP_FILE = str('userSetup.py')
 MAYA_WORKSPACE_FILE = str('workspace.mel')
 MAYA_REG_KEY = str('MAYA_INSTALL_LOCATION')
-MAYA_REG_PATH = str('SOFTWARE\\Autodesk\\Maya\\2016\\Setup\\InstallPath')
+MAYA_REG_PATH_2017 = str('SOFTWARE\\Autodesk\\Maya\\2017\\Setup\\InstallPath')
+MAYA_REG_PATH_2016 = str('SOFTWARE\\Autodesk\\Maya\\2016\\Setup\\InstallPath')
 MAYA_ENV_PATH = str('MAYA_LOCATION')
 
+
+MAYA_PATH_SCRIPTS_2017 = os.path.join(DIR_MAYA, STR_2017, DIR_SCRIPTS)
+MAYA_PATH_MEL_2017 = os.path.join(DIR_MAYA, STR_2017, DIR_SCRIPTS, DIR_MEL)
+MAYA_PATH_PYTHON_2017 = os.path.join(DIR_MAYA, STR_2017, DIR_SCRIPTS, DIR_PYTHON)
+MAYA_PATH_ICONS_2017 = os.path.join(DIR_MAYA, STR_2017, DIR_ICONS)
+MAYA_PATH_PLUGINS_2017 = os.path.join(DIR_MAYA, STR_2017, DIR_PLUGINS)
 
 MAYA_PATH_SCRIPTS_2016 = os.path.join(DIR_MAYA, STR_2016, DIR_SCRIPTS)
 MAYA_PATH_MEL_2016 = os.path.join(DIR_MAYA, STR_2016, DIR_SCRIPTS, DIR_MEL)
 MAYA_PATH_PYTHON_2016 = os.path.join(DIR_MAYA, STR_2016, DIR_SCRIPTS, DIR_PYTHON)
 MAYA_PATH_ICONS_2016 = os.path.join(DIR_MAYA, STR_2016, DIR_ICONS)
 MAYA_PATH_PLUGINS_2016 = os.path.join(DIR_MAYA, STR_2016, DIR_PLUGINS)
+
 MAYA_PATH_SCRIPTS = os.path.join(DIR_MAYA, DIR_SCRIPTS)
 MAYA_PATH_MEL = os.path.join(DIR_MAYA, DIR_SCRIPTS, DIR_MEL)
 MAYA_PATH_PYTHON = os.path.join(DIR_MAYA, DIR_SCRIPTS, DIR_PYTHON)

@@ -68,8 +68,8 @@ def GetBootStrapScript(app_config):
     for path in appConfigPath.Paths:
         if os.path.exists(os.path.join(path, filename)):
             validPaths.append(path)
-    if not validPaths:
-        raise BootstrapNotFound('script_path: {}'.format(appConfigPath.Paths))
+    # if not validPaths:
+    #     raise BootstrapNotFound('script_path: {}'.format(appConfigPath.Paths))
     return validPaths
 
 
@@ -80,6 +80,6 @@ def BootstrapApp(app_config):
     dccRunTime = GetInstalledApp(app_config)
 
     new_env = os.environ.copy()
-    print("~ MGDS: Subprocess.call to \"{}\"".format(dccRunTime))
+    print("~ {0}: Subprocess.call to \"{1}\"".format( __file__, dccRunTime))
     retCode = subprocess.call(dccRunTime, env=new_env)
     return retCode

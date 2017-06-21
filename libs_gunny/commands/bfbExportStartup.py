@@ -13,7 +13,7 @@ __status__ = "development"
 """
 Module Documentation: MpPy\mp_command\bfbExportStartup.py
 
-Startup class to manage the BFB export subparser for Startservice.
+Startup class to manage the BFB export subparser for Gunny.
 
 """
 
@@ -69,29 +69,29 @@ class StartBFB(Command):
     def doCommand(self):
         """ execute the intended procedure. """
 
-        setupLocation = util.STARTSERVICE_PATH
-        mp_root = config.config_func.FindMaxPlayRoot(setupLocation)
-        config.config_envar_defaults.SetEnvarDefaults(mp_root)
+        setupLocation = util.GUNNY_ENTRYPOINT_PATH
+        mp_root = config.config_func.FindRootMarker(setupLocation)
+        config.config_func.SetEnvarDefaults(mp_root)
 
         if self.export_inputfile and os.path.exists(self.export_inputfile) and self.export_outputfile:
             dcc_vers = (DESC_CONFIG_MAYAPY, self.MAYA_VERSION)
             MpConfig = config.config_parse.Config_Parser(dcc_vers)
 
             script_path_obj = getattr(MpConfig, MAYA_SCRIPT_PATH)
-            print("~ MGDS: MAYA_SCRIPT_PATH \"{}\"".format(script_path_obj))
+            print("~ {0}: MAYA_SCRIPT_PATH \"{1}\"".format(__file__, script_path_obj))
             for loc in script_path_obj.Paths:
                 export_script = os.path.join(loc, self.MAYAPY_RUNSCRIPT)
-                print("~ MGDS: export_script \"{}\"".format(export_script))
+                print("~ {0}: export_script \"{1}\"".format(__file__, export_script))
                 if os.path.isfile(export_script):
                     cmd_value = getattr(MpConfig, EXECUTABLE_COMMAND)
-                    print("~ MGDS: cmd_value \"{}\"".format(cmd_value))
+                    print("~ {0}: cmd_value \"{1}\"".format(__file__, cmd_value))
                     cmd_script_call = ' '.join([cmd_value,
                                                 export_script,
                                                 self.export_inputfile,
                                                 self.export_outputfile,
                                                 str(self.export_ASCII)])
                     setattr(MpConfig, EXECUTABLE_COMMAND, cmd_script_call)
-                    print("~ MGDS: cmd_script_call \"{}\"".format(cmd_script_call))
+                    print("~ {0}: cmd_script_call \"{1}\"".format(__file__, cmd_script_call))
                     break
 
             MpConfig.SetEnvironmentVars()

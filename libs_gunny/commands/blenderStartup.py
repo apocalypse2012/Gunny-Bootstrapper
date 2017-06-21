@@ -13,7 +13,7 @@ __status__ = "development"
 """
 Module Documentation: commands\blenderStartup.py
 
-Blender Boostrapper command class for StartService.
+Blender Boostrapper command class for Gunny.
 """
 
 
@@ -26,7 +26,7 @@ from libs_gunny.commands import util
 
 class StartBlender(Command):
 
-    PARSER_DESC = 'Launch Blender with MGDS pipeline'
+    PARSER_DESC = 'Launch Blender with pipeline'
     # default debugger
     DEBUGGER_TYPE = 'wing5'
     # supported choices
@@ -62,9 +62,9 @@ class StartBlender(Command):
     def doCommand(self):
         """ execute the intended procedure. """
 
-        setupLocation = util.STARTSERVICE_PATH
-        mp_root = config.config_func.FindMaxPlayRoot(setupLocation)
-        config.config_envar_defaults.SetEnvarDefaults(mp_root)
+        setupLocation = util.GUNNY_ENTRYPOINT_PATH
+        mp_root = config.config_func.FindRootMarker(setupLocation)
+        config.config_func.SetEnvarDefaults(mp_root)
 
         dcc_vers = (DESC_CONFIG_BLENDER, '')
         MpConfig = config.config_parse.Config_Parser(dcc_vers)

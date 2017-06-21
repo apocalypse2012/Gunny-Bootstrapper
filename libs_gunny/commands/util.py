@@ -17,13 +17,16 @@ Helpers for start service
 """
 
 import ctypes
+import os
+import sys
+import traceback
 
-STARTSERVICE_PATH = None
+GUNNY_ENTRYPOINT_PATH = None
 
 
 def Set_Executable(start_path):
-    global STARTSERVICE_PATH
-    STARTSERVICE_PATH = start_path
+    global GUNNY_ENTRYPOINT_PATH
+    GUNNY_ENTRYPOINT_PATH = start_path
 
 
 def islink_ms(path):
@@ -56,6 +59,6 @@ def symlink_ms(source, link_name):
         if csl(link_name, source.replace('/', '\\'), flags) == 0:
             raise ctypes.WinError()
     except Exception as err:
-        print "~ MGDS: Exit with: {}".format(err)
+        print "~ {0}: Exit with: {1}".format(__file__, err)
         T, V, TB = sys.exc_info()
         print ''.join(traceback.format_exception(T,V,TB))

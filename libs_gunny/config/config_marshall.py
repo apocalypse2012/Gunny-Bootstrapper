@@ -18,6 +18,8 @@ Module Documentation: MpPy\mp_config\config_marshall.py
 
 from constants import *
 import config_func
+import exceptions
+import json
 
 
 # Class to resolve environment references at runtime after the project root has been defined.
@@ -117,3 +119,60 @@ class ConfigPath(object):
     @property
     def is_valid(self):
         return len(self._paths) > 0
+
+
+class Configuration_Signature_Error(exceptions.IndexError):
+    pass
+
+
+class ConfigEncoder(json.JSONEncoder):
+    """
+    Part of the JSON object Parsing mechanism. Implements as default function that returns the dictionary result of any
+    object with an method 'toDict' or the baseclass default value. This is to guarantee output from the Ordered Dict
+    Object type.
+    """
+
+    # This mapping associates a given signature of attributes with a type that can deserialize the data. For use with class_
+    # mapper(). This mapping and the function (class_mapper) and class that follow (ConfigEncoder) provide an abstraction
+    # between the config state data in the Config_Parser objects (which are stored in dictionaries) and the config_default
+    # data templates which are defined in Named_Tuples to guarantee serialization order in the config file.
+    JSON_MAPPING = {frozenset(('paths', 'flags')): ConfigPath, }
+
+    @staticmethod
+    def class_mapper(d):
+        """
+        Part of the JSON object hook parsing mechanism. Uses to JSON mapping types above to template the data structures
+        parsed from file. This class guarantees parsing of objects to Named Tuple and output to dictionaries.
+        :param d: JSON load object
+        :return: The object itself or an instance of the correct data structure containing the parsed values.
+        """
+        obj = None
+        for keys, cls in ConfigEncoder.JSON_MAPPING.items():
+            if not keys.symmetric_difference(d.keys()):
+                obj = cls(**d)
+                if hasattr(obj, '_asdict'):
+                    return obj._asdict()
+                else:
+                    return obj
+        return d
+
+    def add_mapping(self, new_type):
+        mapping = frozenset(new_type._fields)
+        if not mapping in ConfigEncoder.JSON_MAPPING:
+            ConfigEncoder.JSON_MAPPING[mapping] = new_type
+        else:
+            raise Configuration_Signature_Error("JSON mapping already contains a data specification with that signature.")
+
+    def remove_mapping(self, del_type):
+        mapping = frozenset(del_type._fields)
+        if mapping in ConfigEncoder.JSON_MAPPING:
+            del(ConfigEncoder.JSON_MAPPING[mapping])
+        else:
+            raise Configuration_Signature_Error("Specified data spec not found.")
+
+    def default(self, obj):
+        if hasattr(obj,'toDict'):
+            return obj.toDict()
+        else:
+            return json.JSONEncoder.default(self, obj)
+

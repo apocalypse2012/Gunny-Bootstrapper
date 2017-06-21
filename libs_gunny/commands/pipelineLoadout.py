@@ -28,7 +28,7 @@ DCC_PATH = 'dcc'
 SHARED_PATH = 'shared'
 ROOT_FILES = 'root_files'
 ASSETS_FOLDER = 'assets'
-START_SERVICE_FILE = 'startService.exe'
+START_SERVICE_FILE = 'Gunny.exe'
 
 if os.name == "nt":
     # Subbing in Windows compatible operations on symlinks for cross platform operation.
@@ -88,7 +88,7 @@ def get_relative_files(walk_start_dir):
 
 
 def copy_proc(wsRootPath):
-    sdk_pipeline_path = util.STARTSERVICE_PATH
+    sdk_pipeline_path = util.GUNNY_ENTRYPOINT_PATH
 
     file_migration = ((wsRootPath, os.path.join(sdk_pipeline_path, ROOT_FILES)),
                       (os.path.join(wsRootPath, ASSETS_FOLDER), ''),
@@ -121,8 +121,8 @@ def copy_proc(wsRootPath):
 def symlink_proc(wsRootPath):
     ensure_directory(wsRootPath)
     ensure_directory(os.path.join(wsRootPath, ASSETS_FOLDER))
-    ensure_symlink(os.path.join(wsRootPath, PIPELINE_PATH), util.STARTSERVICE_PATH)
-    root_files_path = os.path.join(util.STARTSERVICE_PATH, ROOT_FILES)
+    ensure_symlink(os.path.join(wsRootPath, PIPELINE_PATH), util.GUNNY_ENTRYPOINT_PATH)
+    root_files_path = os.path.join(util.GUNNY_ENTRYPOINT_PATH, ROOT_FILES)
     filesToCopy = get_relative_files(root_files_path)
     for file_val in filesToCopy:
         ensure_file(file_val, wsRootPath, root_files_path)

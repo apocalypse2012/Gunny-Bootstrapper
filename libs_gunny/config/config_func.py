@@ -77,8 +77,6 @@ def updateEnvironmentPath(envar, newpath):
         pathStr = ';'.join(pathList)
     else:
         pathStr = newpath if isinstance(newpath, basestring) else ';'.join(newpath)
-    print("~ MGDS: Set environment variable for \"{}\", add \"{}\"".format(envar, newpath))
-    print("~ MGDS: environment variable result \"{}\"".format(pathStr))
     os.environ[envar] = pathStr
 
 
@@ -105,7 +103,7 @@ def getEnvironmentPath(envar, root):
     return list()
 
 
-def FindMaxPlayRoot(curr_path=os.path.dirname(__file__), file_marker = PROJECTFOLDER_FILEMARKER):
+def FindRootMarker(curr_path=os.path.dirname(__file__), file_marker = PIPELINEFOLDER_FILEMARKER):
     """
     Recursive function that traverses up directory tree from curr_path looking for a file of a given name matching the
     Marker string. If it finds the file it returns the directory path that contains the file.
@@ -124,7 +122,7 @@ def FindMaxPlayRoot(curr_path=os.path.dirname(__file__), file_marker = PROJECTFO
         # check to see if we already didn't find this file
         raise RootNotFound('parentPath: {}, curr_path: {}'.format(parentPath, curr_path))
 
-    return FindMaxPlayRoot(parentPath, file_marker)
+    return FindRootMarker(parentPath, file_marker)
 
 
 def filterPath(value):
@@ -159,12 +157,15 @@ def GetEnvarDefaults(var):
     return val
 
 
-def SetEnvarDefaults(root=None, envals=ENVAR_DEFAULTS):
+def SetEnvarDefaults(root=None, envals=None):
     """
     Set Environment Variables for each default that is not already set with a value. Will not over-write. Must be safe
     to run at any time.
     :return: None
     """
+    if not envals:
+        global ENVAR_DEFAULTS
+        envals = ENVAR_DEFAULTS
     if root and os.path.exists(root):
         os.environ[ENVAR_GUNNY_ROOT] = root
         envals[ENVAR_GUNNY_ROOT] = root

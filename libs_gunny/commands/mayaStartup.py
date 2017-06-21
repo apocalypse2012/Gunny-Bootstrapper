@@ -13,7 +13,7 @@ __status__ = "development"
 """
 Module Documentation: commands\mayaStartup.py
 
-Maya Boostrapper command class for StartService.
+Maya Boostrapper command class for Gunny.
 """
 
 
@@ -26,11 +26,11 @@ from libs_gunny.commands import util
 
 class StartMaya(Command):
 
-    PARSER_DESC = 'Launch Maya with MGDS pipeline'
+    PARSER_DESC = 'Launch Maya with pipeline'
     # default maya version if one is not specified
-    MAYA_VERSION = '2016'
+    MAYA_VERSION = '2017'
     # supported choices
-    MAYA_VER_CHOICES = ['2014', '2015', MAYA_VERSION]
+    MAYA_VER_CHOICES = ['2015', '2016', MAYA_VERSION]
 
     # default debugger
     DEBUGGER_TYPE = 'wing5'
@@ -76,9 +76,9 @@ class StartMaya(Command):
     def doCommand(self):
         """ execute the intended procedure. """
 
-        setupLocation = util.STARTSERVICE_PATH
-        mp_root = config.config_func.FindMaxPlayRoot(setupLocation)
-        config.config_envar_defaults.SetEnvarDefaults(mp_root)
+        setupLocation = util.GUNNY_ENTRYPOINT_PATH
+        mp_root = config.config_func.FindRootMarker(setupLocation)
+        config.config_func.SetEnvarDefaults(mp_root)
 
         dcc_vers = (DESC_CONFIG_MAYA, self.maya_version)
         MpConfig = config.config_parse.Config_Parser(dcc_vers)
@@ -91,8 +91,8 @@ class StartMaya(Command):
                 configScriptsDir = config.config_marshall.ConfigPath(self.maya_scripts_dir, ABSOLUTE_PATH_FLAG)
                 setattr(MpConfig, APP_CONFIG_PATH, configScriptsDir.toDict())
             else:
-                print ("~ MGDS: Specified Maya userSetup script not found.")
-                print ("~ MGDS: Using fall back configuration.")
+                print ("~ {0}: Specified Maya userSetup script not found.".format(__file__))
+                print ("~ {0}: Using fall back configuration.".format(__file__))
 
         MpConfig.SetEnvironmentVars()
         MpConfig.SetPythonPaths()

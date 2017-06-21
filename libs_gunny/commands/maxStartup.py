@@ -13,7 +13,7 @@ __status__ = "development"
 """
 Module Documentation: commands\maxStartup.py
 
-3dsmax Boostrapper command class for StartService.
+3dsmax Boostrapper command class for Gunny.
 """
 
 
@@ -26,11 +26,11 @@ from libs_gunny.commands import util
 
 class StartMax(Command):
 
-    PARSER_DESC = 'Launch 3dsmax with MGDS pipeline'
+    PARSER_DESC = 'Launch 3dsmax with pipeline'
     # default max version if one is not specified
-    MAX_VERSION = '2016'
+    MAX_VERSION = '2018'
     # supported choices
-    MAX_VER_CHOICES = {'2015': '17000', MAX_VERSION: '18000'}
+    MAX_VER_CHOICES = {'2015': '17000', '2016': '18000', '2017': '19000', MAX_VERSION: '20000'}
 
     # default debugger
     DEBUGGER_TYPE = 'wing5'
@@ -76,9 +76,9 @@ class StartMax(Command):
     def doCommand(self):
         """ execute the intended procedure. """
 
-        setupLocation = util.STARTSERVICE_PATH
-        mp_root = config.config_func.FindMaxPlayRoot(setupLocation)
-        config.config_envar_defaults.SetEnvarDefaults(mp_root)
+        setupLocation = util.GUNNY_ENTRYPOINT_PATH
+        mp_root = config.config_func.FindRootMarker(setupLocation)
+        config.config_func.SetEnvarDefaults(mp_root)
 
         max_version = self.MAX_VER_CHOICES[self.max_version]
         dcc_vers = (DESC_CONFIG_3DSMAX, max_version)
