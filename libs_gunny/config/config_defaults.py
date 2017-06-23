@@ -64,9 +64,11 @@ JSON_ENCODER_SPEC.add_mapping(CONFIG_INFO_TYPE)
 CONFIG_GUNNY_DEFAULT = {
     COMMENT_QUALIFIER: defaults.MAX_PLAY_CONFIG_COMMENT,
     ENVAR_APPDATA: ConfigPath(paths=[ValidEnvars(ENVAR_APPDATA), ], flags=[
-                               ABSOLUTE_PATH_FLAG]),
+                               ABSOLUTE_PATH_FLAG,
+                               ENV_VAR_FLAG]),
     ENVAR_GUNNY_ROOT: ConfigPath(paths=[ValidEnvars(ENVAR_GUNNY_ROOT), ], flags=[
-                               ABSOLUTE_PATH_FLAG]),
+                               ABSOLUTE_PATH_FLAG,
+                               ENV_VAR_FLAG]),
     ENVAR_TOOLS_PATH: ConfigPath(paths=[ValidEnvars(ENVAR_TOOLS_PATH), ], flags=[
                                ABSOLUTE_PATH_FLAG,
                                ENV_VAR_FLAG]),
@@ -94,6 +96,27 @@ CONFIG_DCC_TYPE = namedtuple(CONFIG_DCC_TYPENAME, (APP_ID, DESC_CONFIG_DCC, APP_
 JSON_ENCODER_SPEC.add_mapping(CONFIG_DCC_TYPE)
 
 
+CONFIG_MAYA_TYPE = namedtuple(CONFIG_MAYA_TYPENAME, CONFIG_DCC_TYPE._fields+(MAYA_SCRIPT_PATH, XBMLANG_PATH, MAYA_PLUG_IN_PATH))
+JSON_ENCODER_SPEC.add_mapping(CONFIG_MAYA_TYPE)
+
+
+CONFIG_3DSMAX_TYPE = namedtuple(CONFIG_3DSMAX_TYPENAME, CONFIG_DCC_TYPE._fields+(MAX_PLUGIN_PATH,))
+JSON_ENCODER_SPEC.add_mapping(CONFIG_3DSMAX_TYPE)
+
+
+CONFIGURATION_DEFAULT = {DESC_ENVAR: CONFIG_ENVAR,
+                         DESC_CONFIG_INFO: CONFIG_INFO,
+                         DESC_CONFIG_GUNNY: CONFIG_GUNNY,
+                         DESC_CONFIG_DCC: []
+                         }
+CONFIGURATION_TYPE = namedtuple(CONFIG_DATA_TYPENAME, (DESC_ENVAR, DESC_CONFIG_INFO, DESC_CONFIG_GUNNY, DESC_CONFIG_DCC))
+DEFAULT_CONFIGURATION = CONFIGURATION_TYPE(**CONFIGURATION_DEFAULT)._asdict()
+JSON_ENCODER_SPEC.add_mapping(CONFIGURATION_TYPE)
+
+
+
+
+"""
 CONFIG_MAYA_2017_DEFAULT= {
     APP_ID: None,
     DESC_CONFIG_DCC: DESC_CONFIG_MAYA,
@@ -130,12 +153,9 @@ CONFIG_MAYA_2017_DEFAULT= {
                                            RELATIVE_PATH_FLAG,
                                            ENV_VAR_FLAG])
 }
-CONFIG_MAYA_TYPE = namedtuple(CONFIG_MAYA_TYPENAME, CONFIG_DCC_TYPE._fields+(MAYA_SCRIPT_PATH, XBMLANG_PATH,
-                                                                           MAYA_PLUG_IN_PATH))
 CONFIG_MAYA_2017 = CONFIG_MAYA_TYPE(**CONFIG_MAYA_2017_DEFAULT)._asdict()
-JSON_ENCODER_SPEC.add_mapping(CONFIG_MAYA_TYPE)
 
-"""
+
 CONFIG_MAYA_2016_DEFAULT= {
     APP_ID: None,
     DESC_CONFIG_DCC: DESC_CONFIG_MAYA,
@@ -282,7 +302,7 @@ CONFIG_MAYA_2014_DEFAULT= {
                                            ENV_VAR_FLAG])
 }
 CONFIG_MAYA_2014 = CONFIG_MAYA_TYPE(**CONFIG_MAYA_2014_DEFAULT)._asdict()
-"""
+
 
 CONFIG_3DSMAX_2018_DEFAULT = {
     APP_ID: None,
@@ -314,7 +334,6 @@ CONFIG_3DSMAX_2018 = CONFIG_3DSMAX_TYPE(**CONFIG_3DSMAX_2018_DEFAULT)._asdict()
 JSON_ENCODER_SPEC.add_mapping(CONFIG_3DSMAX_TYPE)
 
 
-"""
 CONFIG_3DSMAX_2016_DEFAULT = {
     APP_ID: None,
     DESC_CONFIG_DCC: DESC_CONFIG_3DSMAX,
@@ -368,7 +387,7 @@ CONFIG_3DSMAX_2015_DEFAULT = {
                                          ENV_VAR_FLAG])
 }
 CONFIG_3DSMAX_2015 = CONFIG_3DSMAX_TYPE(**CONFIG_3DSMAX_2015_DEFAULT)._asdict()
-"""
+
 
 CONFIG_BLENDER_DEFAULT = {
     APP_ID: None,
@@ -390,6 +409,7 @@ CONFIG_BLENDER_DEFAULT = {
                                        PYTHON_PATH_FLAG])
 }
 CONFIG_BLENDER = CONFIG_DCC_TYPE(**CONFIG_BLENDER_DEFAULT)._asdict()
+"""
 
 
 # CONFIG_USER_DEFAULTS = defaults.USER_CONFIG_DEFAULTS
@@ -397,15 +417,4 @@ CONFIG_BLENDER = CONFIG_DCC_TYPE(**CONFIG_BLENDER_DEFAULT)._asdict()
 #                                                        TEMPLATE_QUALIFIER+'2', TEMPLATE_QUALIFIER+'3'))
 # CONFIG_USER = CONFIG_USER_TYPE(**CONFIG_USER_DEFAULTS)._asdict()
 
-
-CONFIGURATION_DEFAULT = {DESC_ENVAR: CONFIG_ENVAR,
-                         DESC_CONFIG_INFO: CONFIG_INFO,
-                         DESC_CONFIG_GUNNY: CONFIG_GUNNY,
-                         DESC_CONFIG_DCC: [CONFIG_MAYA_2017,
-                                           CONFIG_3DSMAX_2018,
-                                           CONFIG_BLENDER]
-                         }
-CONFIGURATION_TYPE = namedtuple(CONFIG_DATA_TYPENAME, (DESC_ENVAR, DESC_CONFIG_INFO, DESC_CONFIG_GUNNY, DESC_CONFIG_DCC))
-DEFAULT_CONFIGURATION = CONFIGURATION_TYPE(**CONFIGURATION_DEFAULT)._asdict()
-JSON_ENCODER_SPEC.add_mapping(CONFIGURATION_TYPE)
 

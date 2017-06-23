@@ -36,7 +36,6 @@ import site
 import traceback
 
 log_source = 'Gunny'
-python_modules_lib = 'libs_gunny'
 
 
 # -------------------------------------------------------------------------
@@ -85,7 +84,7 @@ if __name__ == "__main__":
 
     # Get the location of 'this' script module
     setupLocation = module_path().encode(encoding='utf-8')
-    pythonIncludePath = os.path.normpath(os.path.join(setupLocation, python_modules_lib))
+    pythonIncludePath = os.path.normpath(setupLocation)
     pythonIncludePath = os.path.realpath(pythonIncludePath)
 
     # verify pythonIncludePath exists and add it as a site dir

@@ -1,0 +1,331 @@
+{
+    "env_variables": {
+        "GUNNY_ROOT": "D:\\Development\\GitHub\\Pipeline", 
+        "GUNNY_TOOLS": "$GUNNY_ROOT\\tools", 
+        "GUNNY_DCC": "$GUNNY_ROOT\\DCC", 
+        "GUNNY_PY_PACKAGES": "$GUNNY_ROOT\\libs_gunny", 
+        "GUNNY_PY_PACKAGES_3RDPARTY": "$GUNNY_ROOT\\libs_thirdparty\\native_2x", 
+        "GUNNY_APPDATA": "%APPDATA%\\Gunny"
+    }, 
+    "info": {
+        "user_comment": "This info section is protected. These Key:Value pairs are generated every time the file is written. Any changes will be ignored/purged when Config is read from disk!", 
+        "GUNNY_COMPANY": "GUNNY", 
+        "configVer": 1, 
+        "executable": "D:\\Development\\GitHub\\Pipeline\\Gunny.exe", 
+        "pyVersion": "sys.version_info(major=2, minor=7, micro=13, releaselevel='final', serial=0)", 
+        "pyInstall": "D:\\Development\\GitHub\\Pipeline", 
+        "platform": "win32", 
+        "osDataPath": "C:\\Users\\Raymond Stewart\\AppData\\Roaming\\Gunny"
+    }, 
+    "Gunny": {
+        "user_comment": "First non _comment entry in the block should be the ROOT path for the block. All paths in this block share the common root MP_ROOT... unless you mark the path as absolute.  By default we do not dump MP_ROOT here. We store the MP_ROOT in the info section, each time the config is generated (so we know where you were running from) however if you DO include a MP_ROOT definition in this MaxPlay section - we will use that to override the MP_ROOT before continuing the boostrap. The defaults here are already added to the environment, it is recommended to not remove the addEnv, for these existing defaults. If adding new paths, you can set the flags: root/absolute/relative ... and if you include the addEnv those Key:path values will be added to the environment as well Flags: addEnv will add the Key:Value to the environment, setEnv will set and persist in user environment - (currently not supported), addSysPath will add the path to sys.path, setSysPath will set and persist the path in the os - (currently not supported), addPySiteDir will add the path as a python sitedir", 
+        "GUNNY_APPDATA": {
+            "paths": [
+                "C", 
+                ":", 
+                "\\", 
+                "U", 
+                "s", 
+                "e", 
+                "r", 
+                "s", 
+                "\\", 
+                "R", 
+                "a", 
+                "y", 
+                "m", 
+                "o", 
+                "n", 
+                "d", 
+                " ", 
+                "S", 
+                "t", 
+                "e", 
+                "w", 
+                "a", 
+                "r", 
+                "t", 
+                "\\", 
+                "A", 
+                "p", 
+                "p", 
+                "D", 
+                "a", 
+                "t", 
+                "a", 
+                "\\", 
+                "R", 
+                "o", 
+                "a", 
+                "m", 
+                "i", 
+                "n", 
+                "g", 
+                "\\", 
+                "G", 
+                "u", 
+                "n", 
+                "n", 
+                "y"
+            ], 
+            "flags": [
+                "absolute"
+            ]
+        }, 
+        "GUNNY_ROOT": {
+            "paths": [
+                "D", 
+                ":", 
+                "\\", 
+                "D", 
+                "e", 
+                "v", 
+                "e", 
+                "l", 
+                "o", 
+                "p", 
+                "m", 
+                "e", 
+                "n", 
+                "t", 
+                "\\", 
+                "G", 
+                "i", 
+                "t", 
+                "H", 
+                "u", 
+                "b", 
+                "\\", 
+                "P", 
+                "i", 
+                "p", 
+                "e", 
+                "l", 
+                "i", 
+                "n", 
+                "e"
+            ], 
+            "flags": [
+                "absolute"
+            ]
+        }, 
+        "GUNNY_TOOLS": {
+            "paths": [
+                "D", 
+                ":", 
+                "\\", 
+                "D", 
+                "e", 
+                "v", 
+                "e", 
+                "l", 
+                "o", 
+                "p", 
+                "m", 
+                "e", 
+                "n", 
+                "t", 
+                "\\", 
+                "G", 
+                "i", 
+                "t", 
+                "H", 
+                "u", 
+                "b", 
+                "\\", 
+                "P", 
+                "i", 
+                "p", 
+                "e", 
+                "l", 
+                "i", 
+                "n", 
+                "e", 
+                "\\", 
+                "t", 
+                "o", 
+                "o", 
+                "l", 
+                "s"
+            ], 
+            "flags": [
+                "addEnv", 
+                "absolute"
+            ]
+        }, 
+        "GUNNY_PY_PACKAGES": {
+            "paths": [
+                "D", 
+                ":", 
+                "\\", 
+                "D", 
+                "e", 
+                "v", 
+                "e", 
+                "l", 
+                "o", 
+                "p", 
+                "m", 
+                "e", 
+                "n", 
+                "t", 
+                "\\", 
+                "G", 
+                "i", 
+                "t", 
+                "H", 
+                "u", 
+                "b", 
+                "\\", 
+                "P", 
+                "i", 
+                "p", 
+                "e", 
+                "l", 
+                "i", 
+                "n", 
+                "e", 
+                "\\", 
+                "l", 
+                "i", 
+                "b", 
+                "s", 
+                "_", 
+                "g", 
+                "u", 
+                "n", 
+                "n", 
+                "y"
+            ], 
+            "flags": [
+                "addEnv", 
+                "addPySiteDir", 
+                "absolute"
+            ]
+        }, 
+        "GUNNY_PY_PACKAGES_3RDPARTY": {
+            "paths": [
+                "D", 
+                ":", 
+                "\\", 
+                "D", 
+                "e", 
+                "v", 
+                "e", 
+                "l", 
+                "o", 
+                "p", 
+                "m", 
+                "e", 
+                "n", 
+                "t", 
+                "\\", 
+                "G", 
+                "i", 
+                "t", 
+                "H", 
+                "u", 
+                "b", 
+                "\\", 
+                "P", 
+                "i", 
+                "p", 
+                "e", 
+                "l", 
+                "i", 
+                "n", 
+                "e", 
+                "\\", 
+                "l", 
+                "i", 
+                "b", 
+                "s", 
+                "_", 
+                "t", 
+                "h", 
+                "i", 
+                "r", 
+                "d", 
+                "p", 
+                "a", 
+                "r", 
+                "t", 
+                "y", 
+                "\\", 
+                "n", 
+                "a", 
+                "t", 
+                "i", 
+                "v", 
+                "e", 
+                "_", 
+                "2", 
+                "x"
+            ], 
+            "flags": [
+                "addEnv", 
+                "addPySiteDir", 
+                "absolute"
+            ]
+        }, 
+        "metadata_template1": [
+            "c:\\example\\path", 
+            "absolute", 
+            "addEnv", 
+            "addSysPath", 
+            "addPySiteDir"
+        ], 
+        "metadata_template2": [
+            "another\\path\\example", 
+            "relative", 
+            "addEnv", 
+            "addSysPath", 
+            "addPySiteDir"
+        ]
+    }, 
+    "dcc_Application": [
+        {
+            "appguid": null, 
+            "dcc_Application": "dcc_3dsmax", 
+            "appVersion": "20000", 
+            "executableFile": "3dsmax.exe -U PythonHost startup.py", 
+            "startScriptVar": "path", 
+            "startScriptVal": "startup.ms", 
+            "installRegKey": "Installdir", 
+            "installRegPaths": "SOFTWARE\\Autodesk\\3dsMax\\20.0", 
+            "installEnvPaths": "ADSK_3DSMAX_X64_2018", 
+            "appRoot": "GUNNY_DCC", 
+            "appConfigPath": {
+                "paths": [
+                    "D:\\Development\\GitHub\\Pipeline\\DCC\\Max\\scripts", 
+                    "D:\\Development\\GitHub\\Pipeline\\DCC\\Max\\2018\\scripts"
+                ], 
+                "flags": [
+                    "relative", 
+                    "GUNNY_DCC"
+                ]
+            }, 
+            "appPyPackage": {
+                "paths": [
+                    "D:\\Development\\GitHub\\Pipeline\\DCC\\Max", 
+                    "D:\\Development\\GitHub\\Pipeline\\DCC\\Max\\2018"
+                ], 
+                "flags": [
+                    "addPySiteDir", 
+                    "relative", 
+                    "GUNNY_DCC"
+                ]
+            }, 
+            "MAX_PLUGIN_PATH": {
+                "paths": [
+                    "D:\\Development\\GitHub\\Pipeline\\DCC\\Max\\2018\\plugins"
+                ], 
+                "flags": [
+                    "addEnv", 
+                    "relative", 
+                    "GUNNY_DCC"
+                ]
+            }
+        }
+    ]
+}

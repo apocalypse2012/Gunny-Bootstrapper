@@ -57,15 +57,26 @@ class ConfigPath(object):
         elif ENVAR_TOOLS_PATH in flags:
             self._rootType = ENVAR_TOOLS_PATH
             self._root = ValidEnvars(ENVAR_TOOLS_PATH)
-        else:
+        elif ENVAR_DCC_PATH in flags:
             self._rootType = ENVAR_DCC_PATH
             self._root = ValidEnvars(ENVAR_DCC_PATH)
+        elif ENVAR_PY_PACKAGES_PATH in flags:
+            self._rootType = ENVAR_PY_PACKAGES_PATH
+            self._root = ValidEnvars(ENVAR_PY_PACKAGES_PATH)
+        elif ENVAR_PY_PACKAGES_3RDPARTY_PATH in flags:
+            self._rootType = ENVAR_PY_PACKAGES_3RDPARTY_PATH
+            self._root = ValidEnvars(ENVAR_PY_PACKAGES_3RDPARTY_PATH)
+        elif ENVAR_APPDATA in flags:
+            self._rootType = ENVAR_APPDATA
+            self._root = ValidEnvars(ENVAR_APPDATA)
+        else:
+            self._root = None
 
     def toDict(self, forceAbsolute=False):
         retDict = {}
         if forceAbsolute:
-            self._absoluteFlag is True
-            self._relativeFlag is False
+            self._absoluteFlag = True
+            self._relativeFlag = False
         retDict['paths'] = self.Paths
         retDict['flags'] = self.Flags
         return retDict

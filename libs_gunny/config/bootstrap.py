@@ -80,6 +80,5 @@ def BootstrapApp(app_config):
     dccRunTime = GetInstalledApp(app_config)
 
     new_env = os.environ.copy()
-    print("~ {0}: Subprocess.call to \"{1}\"".format( __file__, dccRunTime))
     retCode = subprocess.call(dccRunTime, env=new_env)
     return retCode

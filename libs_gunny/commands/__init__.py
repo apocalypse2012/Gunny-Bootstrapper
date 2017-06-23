@@ -21,11 +21,7 @@ import importlib
 
 # The __init__.py files help guide import statements without automatically
 # importing all of the modules
-__all__ = ['mayaStartup',
-           'maxStartup',
-           'blenderStartup',
-           'bfbExportStartup',
-           'pipelineLoadout',
+__all__ = ['3dsmax2018',
            'util']
 log_source = 'libs_gunny/commands'
 

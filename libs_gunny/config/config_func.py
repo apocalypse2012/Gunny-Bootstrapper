@@ -80,7 +80,7 @@ def updateEnvironmentPath(envar, newpath):
     os.environ[envar] = pathStr
 
 
-def getEnvironmentPath(envar, root):
+def getEnvironmentPath(envar, root=None):
     """
     For the given environment variable, return all paths with the given root.
     :param envar: environment variable to query.
@@ -94,12 +94,12 @@ def getEnvironmentPath(envar, root):
             pathList = set(pathStr.split(delimiter))
             collected = set()
             for path in pathList:
-                if root in path:
+                if not root or root in path:
                     collected.add(path)
             return list(collected)
         else:
-            if root in pathStr:
-                return list(pathStr)
+            if not root or root in pathStr:
+                return [pathStr]
     return list()
 
 

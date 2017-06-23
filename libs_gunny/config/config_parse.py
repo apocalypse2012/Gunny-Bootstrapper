@@ -109,26 +109,44 @@ class Config_Parser(object):
 
     _CURRENT_CONFIG = OrderedDict()
 
-    def __init__(self, dcc_vers=(DESC_CONFIG_BLENDER, '')):
+    def __init__(self):
         """
         Initialization of a new Config Parser object. This is responsible for defining and initializing the current
         configuration which is stored as a class variable. This insures that the configuration state follows a Borg
         pattern that is guaranteed to remain common to all instances.
         :param dcc_vers: This is an input to identify the application and Version of for Digital Content Creation.
         """
-        self._dcc_vers = dcc_vers
-        self._dcc_indx = self._get_dcc_indx()
+        self._dcc_indx = None
         if not Config_Parser._CURRENT_CONFIG:
             self._default_config = config_defaults.DEFAULT_CONFIGURATION
             deep_update(Config_Parser._CURRENT_CONFIG, self._default_config)
-            self._generate_config_attributes()
 
             self._persistent_config = self._load_file_config()
+            deep_update(Config_Parser._CURRENT_CONFIG, self._persistent_config)
+
             self._environment_config = self._get_env_config()
+            deep_update(Config_Parser._CURRENT_CONFIG, self._environment_config, clean=True)
+
             self._applied_config = self._get_applied_config()
-            self._setup_config_state()
+            deep_update(Config_Parser._CURRENT_CONFIG, self._applied_config, clean=True)
+
+            self._generate_config_attributes()
         else:
             self._generate_config_attributes()
+
+    def _find_dcc_indx(self, guid):
+        for idx, dcc in enumerate(self._CURRENT_CONFIG[DESC_CONFIG_DCC]):
+            if dcc[APP_ID] == guid:
+                return idx
+        return None
+
+    def Add_DCC_Config(self, config, force=False):
+        if force or self._dcc_indx is None or self._find_dcc_indx(config[APP_ID]) is None:
+            self._dcc_indx = len(self._CURRENT_CONFIG[DESC_CONFIG_DCC])
+            self._CURRENT_CONFIG[DESC_CONFIG_DCC].append(config)
+            self._generate_config_attributes()
+            self.SaveConfig()
+        return self._dcc_indx
 
     def _marchParams(self):
         """
@@ -138,6 +156,8 @@ class Config_Parser(object):
         """
         for section, parms in Config_Parser._CURRENT_CONFIG.iteritems():
             if section == DESC_CONFIG_DCC:
+                if self._dcc_indx is None:
+                    continue
                 for name, value in parms[self._dcc_indx].iteritems():
                     if isinstance(value, ConfigPath):
                         yield (name, value, section)
@@ -158,23 +178,13 @@ class Config_Parser(object):
             if isinstance(contents, Mapping):
                 for name, value in contents.iteritems():
                     if not ignorable(name):
-                        yield (name, value, section, None)
-            elif section == DESC_CONFIG_DCC and isinstance(contents, Sequence):
-                for idx, dcc_value in enumerate(contents):
-                    if (dcc_value.get(DESC_CONFIG_DCC), dcc_value.get(APP_VERSION)) == self._dcc_vers:
-                        for name, value in dcc_value.iteritems():
-                            if not ignorable(name):
-                                yield (name, value, section, idx)
-
-    def _get_dcc_indx(self):
-        """
-        Identify the DCC section index in the config data for the required DCC application and version.
-        :return: the index of the DCC parameter data in the DCC section of the configuration.
-        """
-        for name, value, section, index in self._marchConfig(config_defaults.DEFAULT_CONFIGURATION):
-            if index is not None:
-                return index
-        raise Unspecified_DCC("Cannot find DCC application config.")
+                        yield (name, value, section)
+            elif isinstance(contents, Sequence):
+                if section == DESC_CONFIG_DCC and not self._dcc_indx is None:
+                    dcc_value = contents[self._dcc_indx]
+                    for name, value in dcc_value.iteritems():
+                        if not ignorable(name):
+                            yield (name, value, section)
 
     def SaveConfig(self):
         """
@@ -242,6 +252,8 @@ class Config_Parser(object):
         for name, value, section in self._marchParams():
             val = self._get_env_prop(name, value)
             if section == DESC_CONFIG_DCC:
+                if self._dcc_indx is None:
+                    continue
                 env_config[section][self._dcc_indx][name] = val
             else:
                 env_config[section][name] = val
@@ -250,33 +262,31 @@ class Config_Parser(object):
     def _get_applied_config(self):
         return deep_update({}, self._default_config, punk=True)
 
-    def _setup_config_state(self):
-        deep_update(Config_Parser._CURRENT_CONFIG, self._default_config)
-        deep_update(Config_Parser._CURRENT_CONFIG, self._persistent_config)
-        deep_update(Config_Parser._CURRENT_CONFIG, self._environment_config, clean=True)
-        deep_update(Config_Parser._CURRENT_CONFIG, self._applied_config, clean=True)
-
     def _gettr_(self, name, section):
+        # No need to trap self._dcc_indx. No setters and getters defined when there is no dcc context. See _make_property.
         if section == DESC_CONFIG_DCC:
             return Config_Parser._CURRENT_CONFIG[section][self._dcc_indx][name]
         else:
             return Config_Parser._CURRENT_CONFIG[section][name]
 
     def _settr_(self, v, name, section):
+        # No need to trap self._dcc_indx. No setters and getters defined when there is no dcc context. See _make_property.
         if section == DESC_CONFIG_DCC:
-            self._applied_config[DESC_CONFIG_DCC][self._dcc_indx][name] = v
+            Config_Parser._CURRENT_CONFIG[DESC_CONFIG_DCC][self._dcc_indx][name] = v
         else:
-            self._applied_config[section][name] = v
+            Config_Parser._CURRENT_CONFIG[section][name] = v
         self._set_env_prop(name, v)
-        deep_update(Config_Parser._CURRENT_CONFIG, self._applied_config, clean=True)
 
     def _make_property(self, name, section):
+        if section == DESC_CONFIG_DCC and self._dcc_indx is None:
+            # Do not make attributes for DCC app if there is no DCC context.
+            return
         setattr(Config_Parser, name, property(fget=lambda self, nm=name, scn=section: self._gettr_(nm, scn),
                                               fset=lambda self, v, nm=name, scn=section: self._settr_(v, nm, scn),
                                               fdel=lambda self, nm=name, scn=section: self._gettr_(nm, scn)))
 
     def _generate_config_attributes(self):
-        for name, value, section, index in self._marchConfig(Config_Parser._CURRENT_CONFIG):
+        for name, value, section in self._marchConfig(Config_Parser._CURRENT_CONFIG):
             self._make_property(name, section)
 
     def _set_env_prop(self, envName, pathVal):
@@ -287,15 +297,21 @@ class Config_Parser(object):
             updateEnvironmentPath(envName, pathVal)
 
     def _get_env_prop(self, envName, pathVal):
-        newVal = None
         if isinstance(pathVal, ConfigPath):
-            dcc_root = getattr(self, APP_ROOT_TYPE)
-            dcc_path = GetEnvarDefaults(dcc_root)
-            newPathsVal = getEnvironmentPath(envName, dcc_path)
-            newVal = ConfigPath(paths=newPathsVal,
-                                flags=pathVal.toDict(forceAbsolute=True)['flags'])
+            if pathVal.relative:
+                pathVal_root = pathVal.Root
+                newPathsVal = getEnvironmentPath(envName, root=pathVal_root)
+                newVal = ConfigPath(paths=newPathsVal,
+                                    flags=pathVal.toDict(forceAbsolute=True)['flags'])
+            else:
+                newPathsVal = getEnvironmentPath(envName)
+                newVal = ConfigPath(paths=newPathsVal,
+                                    flags=pathVal.toDict(forceAbsolute=True)['flags'])
         else:
             newVal = os.getenv(envName)
         return newVal
+
+
+
 
 
