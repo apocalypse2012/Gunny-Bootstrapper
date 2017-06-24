@@ -63,14 +63,18 @@ class startmax_2018(Command):
     # supported choices
     DEBUGGER_CHOICES = [DEBUGGER_TYPE]
 
-    def __init__(self, subParsers):
+    def __init__(self, parser=None):
         self.max_scripts_dir = None
         self.debug_spec = None
+        self.root_config = None
+        global CONFIG_3DSMAX
+        self.dcc_default_config = CONFIG_3DSMAX
 
-        ## TODO: Make parser optional on instantiation.
-        ## TODO: only run the parent __init__ if the class validation function passes or parser is not none.
-        ## TODO: set default state of state variables is parser is none.
-        super(startmax_2018, self).__init__(subParsers)
+        ## DONE TODO: Make parser optional on instantiation.
+        ## DONE TODO: only run the parent __init__ if the class validation function passes or parser is not none.
+        ## DONE TODO: set default state of state variables is parser is none.-*
+        super(startmax_2018, self).__init__(parser)
+
 
     def registerArguments(self, parser):
 
@@ -94,10 +98,16 @@ class startmax_2018(Command):
         self.debug_spec = args.debug_spec
         return self
 
+    def isValid(self):
+        dcc_file = config.bootstrap.GetInstalledApp(self.root_config)
+        if os.path.isfile(dcc_file) and os.path.exists(dcc_file):
+            return True
+        return False
 
-## TODO: Move root setup to __init__
-## TODO: Move Config instantiation to __init__
-## TODO: Create a validation function to test the executable state (bootstrap.GetInstalledApp)
+
+## DONE TODO: Move root setup to __init__
+## DONE TODO: Move Config instantiation to __init__
+## Done TODO: Create a validation function to test the executable state (bootstrap.GetInstalledApp)
 ## TODO: Modify bootstrap to reference a pipe object that is managed in this class through some kind of callback
 ## TODO: Create a StartCommand function to run doCommand from a thread. Or optionally modify Bootstrap to be non-blocking.
 ## TODO: Add getters and setters for state variables.
@@ -105,12 +115,6 @@ class startmax_2018(Command):
     def doCommand(self):
         """ execute the intended procedure. """
 
-        setupLocation = util.GUNNY_ENTRYPOINT_PATH
-        mp_root = config.config_func.FindRootMarker(setupLocation)
-        config.config_func.SetEnvarDefaults(mp_root)
-
-        MpConfig = config.config_parse.Config_Parser()
-        MpConfig.Add_DCC_Config(CONFIG_3DSMAX)
         if self.max_scripts_dir:
             if os.path.isdir(self.max_scripts_dir):
                 scripts_dir = os.path.split(self.max_scripts_dir)[0]
@@ -123,8 +127,8 @@ class startmax_2018(Command):
                 print ("Specified 3dsmax userSetup script not found.")
                 print ("Using fall back configuration.")
 
-        MpConfig.SetEnvironmentVars()
-        MpConfig.SetPythonPaths()
-        retCode = config.bootstrap.BootstrapApp(MpConfig)
+        self.root_config.SetEnvironmentVars()
+        self.root_config.SetPythonPaths()
+        retCode = config.bootstrap.BootstrapApp(self.root_config)
         return retCode
 

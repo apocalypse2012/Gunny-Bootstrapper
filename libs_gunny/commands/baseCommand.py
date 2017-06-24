@@ -20,6 +20,10 @@ instance returned, then registers a callback to another internal method that cap
 """
 
 import abc
+from libs_gunny import config
+from libs_gunny.commands import util
+from libs_gunny.config.constants import *
+
 
 class Command(object):
 
@@ -27,11 +31,20 @@ class Command(object):
 
     PARSER_DESC = 'Should never see this. Override in derived class.'
 
-    def __init__(self, subParsers):
+    def __init__(self, parser):
 
-        parserInst = subParsers.add_parser(self.__class__.__name__, help=self.PARSER_DESC)
-        self.registerArguments(parserInst)
-        parserInst.set_defaults(func=self.setState)
+        setupLocation = util.GUNNY_ENTRYPOINT_PATH
+        mp_root = config.config_func.FindRootMarker(setupLocation)
+        config.config_func.SetEnvarDefaults(mp_root)
+        self.root_config = config.config_parse.Config_Parser()
+
+        if self.isValid:
+            self.root_config.Add_DCC_Config(self.dcc_default_config)
+
+            if parser is not None:
+                parserInst = parser.add_parser(self.__class__.__name__, help=self.PARSER_DESC)
+                self.registerArguments(parserInst)
+                parserInst.set_defaults(func=self.setState)
 
     @abc.abstractmethod
     def registerArguments(self, parser):
@@ -41,6 +54,11 @@ class Command(object):
     @abc.abstractmethod
     def setState(self, args):
         """ Use the args properties to set state into on the class. Return self. """
+        return
+
+    @abc.abstractmethod
+    def isValid(self):
+        """ Proves that the procedure an be safely run. """
         return
 
     @abc.abstractmethod
