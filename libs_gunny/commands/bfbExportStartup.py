@@ -41,7 +41,7 @@ class StartBFB(Command):
         self.export_ASCII = False
         super(StartBFB, self).__init__(subParsers)
 
-    def registerArguments(self, parser):
+    def _registerArguments(self, parser):
 
         parser.add_argument(self.EXPORT_INFILE,
                             help="Supply the full pathname to the input file.")
@@ -57,7 +57,7 @@ class StartBFB(Command):
                             action="store_true")
 
 
-    def setState(self, args):
+    def _setState(self, args):
         """ Use the args properties to set state into on the class. Return self. """
         print(args)
         dictArgs = vars(args)

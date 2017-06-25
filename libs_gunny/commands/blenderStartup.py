@@ -37,7 +37,7 @@ class StartBlender(Command):
         self.debug_spec = None
         super(StartBlender, self).__init__(subParsers)
 
-    def registerArguments(self, parser):
+    def _registerArguments(self, parser):
 
         # set up argument parsing and options
         parser.add_argument("-s",
@@ -53,7 +53,7 @@ class StartBlender(Command):
                             help="python debugger",
                             required=False)
 
-    def setState(self, args):
+    def _setState(self, args):
         """ Use the args properties to set state into on the class. Return self. """
         self.blender_scripts_dir = args.blender_scripts_dir
         self.debug_spec = args.debug_spec

@@ -43,7 +43,7 @@ class StartMax(Command):
         self.debug_spec = None
         super(StartMax, self).__init__(subParsers)
 
-    def registerArguments(self, parser):
+    def _registerArguments(self, parser):
 
         # set up argument parsing and options
         parser.add_argument("-s",
@@ -66,7 +66,7 @@ class StartMax(Command):
                             help="python debugger",
                             required=False)
 
-    def setState(self, args):
+    def _setState(self, args):
         """ Use the args properties to set state into on the class. Return self. """
         self.max_scripts_dir = args.max_scripts_dir
         self.max_version = args.max_version

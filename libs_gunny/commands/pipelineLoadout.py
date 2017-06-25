@@ -139,7 +139,7 @@ class Pipeline_Loadout(Command):
         self.isCopy = False
         super(Pipeline_Loadout, self).__init__(subParsers)
 
-    def registerArguments(self, parser):
+    def _registerArguments(self, parser):
 
         parser.add_argument(self.WORKSPACE_ROOT,
                             help="Supply the full path to the workspace root.")
@@ -151,7 +151,7 @@ class Pipeline_Loadout(Command):
                             dest=self.COPY_STATE,
                             action="store_true")
 
-    def setState(self, args):
+    def _setState(self, args):
         """ Use the args properties to set state into on the class. Return self. """
         print(args)
         dictArgs = vars(args)

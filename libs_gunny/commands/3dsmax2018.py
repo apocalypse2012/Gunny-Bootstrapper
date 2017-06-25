@@ -21,12 +21,11 @@ import os
 from .baseCommand import Command
 from libs_gunny import config
 from libs_gunny.config.constants import *
-from libs_gunny.commands import util
 from libs_gunny.config.config_marshall import ConfigPath
 
 
 CONFIG_3DSMAX_2018_DEFAULT = {
-    APP_ID: None,
+    APP_ID: 'b4d31e56-5b75-4020-9474-b5fcb1c6c7e7',
     DESC_CONFIG_DCC: DESC_CONFIG_3DSMAX,
     APP_VERSION: '20000',
     EXECUTABLE_COMMAND: '3dsmax.exe -U PythonHost startup.py',
@@ -53,7 +52,7 @@ CONFIG_3DSMAX_2018_DEFAULT = {
 CONFIG_3DSMAX = config.config_defaults.CONFIG_3DSMAX_TYPE(**CONFIG_3DSMAX_2018_DEFAULT)._asdict()
 
 
-class startmax_2018(Command):
+class StartMax_2018(Command):
 
     PARSER_DESC = 'Launch 3dsmax with pipeline'
     # default max version if one is not specified
@@ -73,10 +72,10 @@ class startmax_2018(Command):
         ## DONE TODO: Make parser optional on instantiation.
         ## DONE TODO: only run the parent __init__ if the class validation function passes or parser is not none.
         ## DONE TODO: set default state of state variables is parser is none.-*
-        super(startmax_2018, self).__init__(parser)
+        super(StartMax_2018, self).__init__(parser)
 
 
-    def registerArguments(self, parser):
+    def _registerArguments(self, parser):
 
         # set up argument parsing and options
         parser.add_argument("-s",
@@ -92,18 +91,11 @@ class startmax_2018(Command):
                             help="python debugger",
                             required=False)
 
-    def setState(self, args):
+    def _setState(self, args):
         """ Use the args properties to set state into on the class. Return self. """
         self.max_scripts_dir = args.max_scripts_dir
         self.debug_spec = args.debug_spec
         return self
-
-    def isValid(self):
-        dcc_file = config.bootstrap.GetInstalledApp(self.root_config)
-        if os.path.isfile(dcc_file) and os.path.exists(dcc_file):
-            return True
-        return False
-
 
 ## DONE TODO: Move root setup to __init__
 ## DONE TODO: Move Config instantiation to __init__

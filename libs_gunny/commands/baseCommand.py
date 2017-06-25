@@ -20,6 +20,7 @@ instance returned, then registers a callback to another internal method that cap
 """
 
 import abc
+import os.path
 from libs_gunny import config
 from libs_gunny.commands import util
 from libs_gunny.config.constants import *
@@ -43,22 +44,23 @@ class Command(object):
 
             if parser is not None:
                 parserInst = parser.add_parser(self.__class__.__name__, help=self.PARSER_DESC)
-                self.registerArguments(parserInst)
-                parserInst.set_defaults(func=self.setState)
+                self._registerArguments(parserInst)
+                parserInst.set_defaults(func=self._setState)
+
+    def isValid(self):
+        dcc_file = config.bootstrap.GetInstalledApp(self.root_config)
+        if os.path.isfile(dcc_file) and os.path.exists(dcc_file):
+            return True
+        return False
 
     @abc.abstractmethod
-    def registerArguments(self, parser):
+    def _registerArguments(self, parser):
         """ Add class specific Arguments to the parser to solicit state info required by the class. """
         return
 
     @abc.abstractmethod
-    def setState(self, args):
+    def _setState(self, args):
         """ Use the args properties to set state into on the class. Return self. """
-        return
-
-    @abc.abstractmethod
-    def isValid(self):
-        """ Proves that the procedure an be safely run. """
         return
 
     @abc.abstractmethod

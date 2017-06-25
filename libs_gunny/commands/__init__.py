@@ -22,6 +22,7 @@ import importlib
 # The __init__.py files help guide import statements without automatically
 # importing all of the modules
 __all__ = ['3dsmax2018',
+           'Maya2017',
            'util']
 log_source = 'libs_gunny/commands'
 

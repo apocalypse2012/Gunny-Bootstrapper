@@ -140,9 +140,9 @@ class Config_Parser(object):
                 return idx
         return None
 
-    def Add_DCC_Config(self, config, force=False):
+    def Add_DCC_Config(self, config):
         matching_ID = self._find_dcc_indx(config[APP_ID])
-        if force or matching_ID is None:
+        if matching_ID is None:
             self._dcc_indx = len(self._CURRENT_CONFIG[DESC_CONFIG_DCC])
             self._CURRENT_CONFIG[DESC_CONFIG_DCC].append(config)
             self._generate_config_attributes()
