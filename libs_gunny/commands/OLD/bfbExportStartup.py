@@ -19,7 +19,7 @@ Startup class to manage the BFB export subparser for Gunny.
 
 
 import os
-from .baseCommand import Command
+from commands.baseCommand import Command
 from libs_gunny import config
 from libs_gunny.config.constants import *
 from libs_gunny.commands import util

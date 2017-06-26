@@ -19,7 +19,7 @@ import errno
 import os, sys
 import shutil, stat
 import traceback
-from .baseCommand import Command
+from commands.baseCommand import Command
 from libs_gunny.commands import util
 
 PIPELINE_PATH = 'gds/pipeline'

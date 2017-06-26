@@ -21,7 +21,30 @@ import os
 from .baseCommand import Command
 from libs_gunny import config
 from libs_gunny.config.constants import *
-from libs_gunny.commands import util
+from libs_gunny.config.config_marshall import ConfigPath
+
+
+CONFIG_BLENDER_DEFAULT = {
+    APP_ID: '1b986ef9-72bf-4c21-8e0c-06df8e5acaa9',
+    DESC_CONFIG_DCC: DESC_CONFIG_BLENDER,
+    APP_VERSION: '',
+    EXECUTABLE_COMMAND: 'blender.exe',
+    BOOTSTRAP_TYPE: "BLENDER_USER_SCRIPTS",
+    BOOTSTRAP_FILE: "startup\\startup.py",
+    REG_ENTRY_INSTALL: '',
+    REG_PATH_INSTALL: 'SOFTWARE\\Classes\\blendfile\\shell\\open\\command',
+    ENV_PATH_INSTALL: '',
+    APP_ROOT_TYPE: ENVAR_DCC_PATH,
+    APP_CONFIG_PATH: ConfigPath(paths=["Blender\\scripts"],
+                                flags=[ENVAR_DCC_PATH,
+                                       RELATIVE_PATH_FLAG]),
+    APP_PY_PACKAGES: ConfigPath(paths=["Blender"],
+                                flags=[ENVAR_DCC_PATH,
+                                       RELATIVE_PATH_FLAG,
+                                       PYTHON_PATH_FLAG])
+}
+CONFIG_BLENDER = config.config_defaults.CONFIG_DCC_TYPE(**CONFIG_BLENDER_DEFAULT)._asdict()
+
 
 
 class StartBlender(Command):
@@ -35,6 +58,8 @@ class StartBlender(Command):
     def __init__(self, subParsers):
         self.blender_scripts_dir = None
         self.debug_spec = None
+        global CONFIG_BLENDER
+        self.dcc_default_config = CONFIG_BLENDER
         super(StartBlender, self).__init__(subParsers)
 
     def _registerArguments(self, parser):
@@ -62,24 +87,20 @@ class StartBlender(Command):
     def doCommand(self):
         """ execute the intended procedure. """
 
-        setupLocation = util.GUNNY_ENTRYPOINT_PATH
-        mp_root = config.config_func.FindRootMarker(setupLocation)
-        config.config_func.SetEnvarDefaults(mp_root)
-
-        dcc_vers = (DESC_CONFIG_BLENDER, '')
-        MpConfig = config.config_parse.Config_Parser(dcc_vers)
         if self.blender_scripts_dir:
             if os.path.isdir(self.blender_scripts_dir):
                 scripts_dir = os.path.split(self.blender_scripts_dir)[0]
                 configScriptsDir = (scripts_dir, ABSOLUTE_PATH_FLAG)
-                setattr(MpConfig, APP_CONFIG_PATH, configScriptsDir)
+                setattr(self.root_config, APP_CONFIG_PATH, configScriptsDir)
             elif os.path.isfile(self.blender_scripts_dir):
                 configScriptsDir = (self.maya_scripts_dir, ABSOLUTE_PATH_FLAG)
-                setattr(MpConfig, APP_CONFIG_PATH, configScriptsDir)
+                setattr(self.root_config, APP_CONFIG_PATH, configScriptsDir)
             else:
                 print ("Specified Blender userSetup script not found.")
                 print ("Using fall back configuration.")
 
-        retCode = config.bootstrap.BootstrapApp(MpConfig)
+        self.root_config.SetEnvironmentVars()
+        self.root_config.SetPythonPaths()
+        retCode = config.bootstrap.BootstrapApp(self.root_config)
         return retCode
 

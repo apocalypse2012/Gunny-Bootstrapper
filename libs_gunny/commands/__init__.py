@@ -23,6 +23,8 @@ import importlib
 # importing all of the modules
 __all__ = ['3dsmax2018',
            'Maya2017',
+           'Blender',
+           'Gunny_Shell',
            'util']
 log_source = 'libs_gunny/commands'
 

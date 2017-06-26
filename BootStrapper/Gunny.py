@@ -62,21 +62,6 @@ def module_path():
 # -------------------------------------------------------------------------
 
 
-def get_all_subclasses(cls):
-    """
-    This function returns a list of all subclasses of the the given class. Will march the whole class hierarchy.
-    :param cls: Class to inspect.
-    :return: List of classes.
-    """
-    all_subclasses = []
-
-    for subclass in cls.__subclasses__():
-        all_subclasses.append(subclass)
-        all_subclasses.extend(get_all_subclasses(subclass))
-
-    return all_subclasses
-
-
 # -------------------------------------------------------------------------
 if __name__ == "__main__":
     # store known paths
@@ -96,18 +81,8 @@ if __name__ == "__main__":
         # set up argument parsing and options
         description='Start Service tool launcher.'
         parser = argparse.ArgumentParser(description)
-        subparsers = parser.add_subparsers(dest='tools')
-
         try:
-            # Get all classes that inheret from Command. Instantiate each command class with a subparser instance.
-            # After parsing, the Parse args contains the validated launcher. Execute the launchers doCommand().
-            baseToolLaunchClass = commands.baseCommand.Command
-            for launchers in get_all_subclasses(baseToolLaunchClass):
-                launchers(subparsers)
-            args = parser.parse_args()
-            launcher = args.func(args)
-            retcode = launcher.doCommand()
-            parser.exit(retcode)
+            commands.baseCommand.Parse_Commands(parser)
         except Exception as err:
             print "~ {0}: Exit with: {1}".format(log_source, err)
             T, V, TB = sys.exc_info()

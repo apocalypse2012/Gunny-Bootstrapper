@@ -69,9 +69,6 @@ class StartMax_2018(Command):
         global CONFIG_3DSMAX
         self.dcc_default_config = CONFIG_3DSMAX
 
-        ## DONE TODO: Make parser optional on instantiation.
-        ## DONE TODO: only run the parent __init__ if the class validation function passes or parser is not none.
-        ## DONE TODO: set default state of state variables is parser is none.-*
         super(StartMax_2018, self).__init__(parser)
 
 
@@ -97,9 +94,6 @@ class StartMax_2018(Command):
         self.debug_spec = args.debug_spec
         return self
 
-## DONE TODO: Move root setup to __init__
-## DONE TODO: Move Config instantiation to __init__
-## Done TODO: Create a validation function to test the executable state (bootstrap.GetInstalledApp)
 ## TODO: Modify bootstrap to reference a pipe object that is managed in this class through some kind of callback
 ## TODO: Create a StartCommand function to run doCommand from a thread. Or optionally modify Bootstrap to be non-blocking.
 ## TODO: Add getters and setters for state variables.
@@ -111,10 +105,10 @@ class StartMax_2018(Command):
             if os.path.isdir(self.max_scripts_dir):
                 scripts_dir = os.path.split(self.max_scripts_dir)[0]
                 configScriptsDir = (scripts_dir, ABSOLUTE_PATH_FLAG)
-                setattr(MpConfig, APP_CONFIG_PATH, configScriptsDir)
+                setattr(self.root_config, APP_CONFIG_PATH, configScriptsDir)
             elif os.path.isfile(self.max_scripts_dir):
                 configScriptsDir = (self.max_scripts_dir, ABSOLUTE_PATH_FLAG)
-                setattr(MpConfig, APP_CONFIG_PATH, configScriptsDir)
+                setattr(self.root_config, APP_CONFIG_PATH, configScriptsDir)
             else:
                 print ("Specified 3dsmax userSetup script not found.")
                 print ("Using fall back configuration.")

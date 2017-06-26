@@ -26,6 +26,33 @@ from libs_gunny.commands import util
 from libs_gunny.config.constants import *
 
 
+def get_all_subclasses(cls):
+    """
+    This function returns a list of all subclasses of the the given class. Will march the whole class hierarchy.
+    :param cls: Class to inspect.
+    :return: List of classes.
+    """
+    all_subclasses = []
+
+    for subclass in cls.__subclasses__():
+        all_subclasses.append(subclass)
+        all_subclasses.extend(get_all_subclasses(subclass))
+
+    return all_subclasses
+
+
+def Parse_Commands(parser):
+    # Get all classes that inheret from Command. Instantiate each command class with a subparser instance.
+    # After parsing, the Parse args contains the validated launcher. Execute the launchers doCommand().
+    subparsers = parser.add_subparsers(dest='tools')
+    for launchers in get_all_subclasses(Command):
+        launchers(subparsers)
+    args = parser.parse_args()
+    launcher = args.func(args)
+    retcode = launcher.doCommand()
+    parser.exit(retcode)
+
+
 class Command(object):
 
     __metaclass__ = abc.ABCMeta
@@ -40,7 +67,8 @@ class Command(object):
         self.root_config = config.config_parse.Config_Parser()
 
         if self.isValid:
-            self.root_config.Add_DCC_Config(self.dcc_default_config)
+            if self.dcc_default_config is not None:
+                self.root_config.Add_DCC_Config(self.dcc_default_config)
 
             if parser is not None:
                 parserInst = parser.add_parser(self.__class__.__name__, help=self.PARSER_DESC)

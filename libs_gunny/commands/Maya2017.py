@@ -109,10 +109,10 @@ class StartMaya_2017(Command):
             if os.path.isfile(self.maya_scripts_dir):
                 scripts_dir = os.path.split(self.maya_scripts_dir)[0]
                 configScriptsDir = config.config_marshall.ConfigPath(scripts_dir, ABSOLUTE_PATH_FLAG)
-                setattr(MpConfig, APP_CONFIG_PATH, configScriptsDir.toDict())
+                setattr(self.root_config, APP_CONFIG_PATH, configScriptsDir.toDict())
             elif os.path.isdir(self.maya_scripts_dir):
                 configScriptsDir = config.config_marshall.ConfigPath(self.maya_scripts_dir, ABSOLUTE_PATH_FLAG)
-                setattr(MpConfig, APP_CONFIG_PATH, configScriptsDir.toDict())
+                setattr(self.root_config, APP_CONFIG_PATH, configScriptsDir.toDict())
             else:
                 print ("~ {0}: Specified Maya userSetup script not found.".format(__file__))
                 print ("~ {0}: Using fall back configuration.".format(__file__))
