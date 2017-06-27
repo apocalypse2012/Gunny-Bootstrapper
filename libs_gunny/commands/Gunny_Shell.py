@@ -18,13 +18,37 @@ REPL for Gunny.
 
 
 import os
-from .baseCommand import Command
+import cmd
+from .baseCommand import Command, get_all_subclasses
 from libs_gunny import config
 from libs_gunny.config.constants import *
 from libs_gunny.config.config_marshall import ConfigPath
 
 
-class Gunny_Shell(Command):
+class InteractiveShell(cmd.Cmd):
+    """Accepts commands via the normal interactive prompt or on the command line."""
+
+    def __init__(self, **kwargs):
+        cmd.Cmd.__init__(self, **kwargs)
+        self._Commands = get_all_subclasses(Command)
+
+    def do_greet(self, line):
+        print 'hello,', line
+
+    def default(self, line):
+        if '-h' in line:
+            print('\n'.join([i.__name__ for i in self._Commands if not i.__name__ == 'Shell']))
+        for obj in self._Commands:
+            if obj.__name__ in line:
+                obj().doCommand()
+
+
+    def do_EOF(self, line):
+        return True
+
+
+
+class Shell(Command):
 
     PARSER_DESC = 'Enter Gunny Commandline'
     # default max version if one is not specified
@@ -38,7 +62,7 @@ class Gunny_Shell(Command):
         self.debug_spec = None
         self.root_config = None
         self.dcc_default_config = None
-        super(Gunny_Shell, self).__init__(parser)
+        super(Shell, self).__init__(parser)
 
 
     def _registerArguments(self, parser):
@@ -63,17 +87,4 @@ class Gunny_Shell(Command):
     def doCommand(self):
         """ execute the intended procedure. """
 
-        NextInput = None
-
-        # while(NextInput != chr(27))
-        #     # set up argument parsing and options
-        #     description='Start Service tool launcher.'
-        #     parser = argparse.ArgumentParser(description)
-        #     try:
-        #         commands.baseCommand.Parse_Commands(parser)
-        #     except Exception as err:
-        #         print "~ {0}: Exit with: {1}".format(log_source, err)
-        #         T, V, TB = sys.exc_info()
-        #         print ''.join(traceback.format_exception(T,V,TB))
-        #         parser.error("~ {0}: Unable to initialize all utilities...".format(log_source))
-        #
+        InteractiveShell().cmdloop()

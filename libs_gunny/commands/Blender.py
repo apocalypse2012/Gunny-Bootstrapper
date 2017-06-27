@@ -55,12 +55,12 @@ class StartBlender(Command):
     # supported choices
     DEBUGGER_CHOICES = [DEBUGGER_TYPE]
 
-    def __init__(self, subParsers):
+    def __init__(self, parser=None):
         self.blender_scripts_dir = None
         self.debug_spec = None
         global CONFIG_BLENDER
         self.dcc_default_config = CONFIG_BLENDER
-        super(StartBlender, self).__init__(subParsers)
+        super(StartBlender, self).__init__(parser)
 
     def _registerArguments(self, parser):
 

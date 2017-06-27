@@ -11,8 +11,8 @@ setup(name=name[:-3],
           'py2exe': {
               'bundle_files': 1,
               'compressed': True,
-              'excludes':['MpPy', '_ssl', 'doctest', 'unittest', 'difflib', '_hashlib', '_tkinter', '_socket', 'unicodedata'],
-              'includes':['importlib', 'json', 'shutil', 'filecmp'],
+              'excludes':['_ssl', 'doctest', 'unittest', 'difflib', '_hashlib', '_tkinter', '_socket', 'unicodedata'],
+              'includes':['importlib', 'json', 'shutil', 'filecmp', 'cmd'],
               'packages': [],
               'dist_dir': os.path.dirname(os.path.realpath(name))
           }
