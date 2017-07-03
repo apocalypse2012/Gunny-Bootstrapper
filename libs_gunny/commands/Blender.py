@@ -24,29 +24,6 @@ from libs_gunny.config.constants import *
 from libs_gunny.config.config_marshall import ConfigPath
 
 
-CONFIG_BLENDER_DEFAULT = {
-    APP_ID: '1b986ef9-72bf-4c21-8e0c-06df8e5acaa9',
-    DESC_CONFIG_DCC: DESC_CONFIG_BLENDER,
-    APP_VERSION: '',
-    EXECUTABLE_COMMAND: 'blender.exe',
-    BOOTSTRAP_TYPE: "BLENDER_USER_SCRIPTS",
-    BOOTSTRAP_FILE: "startup\\startup.py",
-    REG_ENTRY_INSTALL: '',
-    REG_PATH_INSTALL: 'SOFTWARE\\Classes\\blendfile\\shell\\open\\command',
-    ENV_PATH_INSTALL: '',
-    APP_ROOT_TYPE: ENVAR_DCC_PATH,
-    APP_CONFIG_PATH: ConfigPath(paths=["Blender\\scripts"],
-                                flags=[ENVAR_DCC_PATH,
-                                       RELATIVE_PATH_FLAG]),
-    APP_PY_PACKAGES: ConfigPath(paths=["Blender"],
-                                flags=[ENVAR_DCC_PATH,
-                                       RELATIVE_PATH_FLAG,
-                                       PYTHON_PATH_FLAG])
-}
-CONFIG_BLENDER = config.config_defaults.CONFIG_DCC_TYPE(**CONFIG_BLENDER_DEFAULT)._asdict()
-
-
-
 class StartBlender(Command):
 
     PARSER_DESC = 'Launch Blender with pipeline'
@@ -58,8 +35,8 @@ class StartBlender(Command):
     def __init__(self, parser=None):
         self.blender_scripts_dir = None
         self.debug_spec = None
-        global CONFIG_BLENDER
-        self.dcc_default_config = CONFIG_BLENDER
+        self.root_config = None
+        self.config_key = DESC_CONFIG_BLENDER
         super(StartBlender, self).__init__(parser)
 
     def _registerArguments(self, parser):
@@ -93,7 +70,7 @@ class StartBlender(Command):
                 configScriptsDir = (scripts_dir, ABSOLUTE_PATH_FLAG)
                 setattr(self.root_config, APP_CONFIG_PATH, configScriptsDir)
             elif os.path.isfile(self.blender_scripts_dir):
-                configScriptsDir = (self.maya_scripts_dir, ABSOLUTE_PATH_FLAG)
+                configScriptsDir = (self.blender_scripts_dir, ABSOLUTE_PATH_FLAG)
                 setattr(self.root_config, APP_CONFIG_PATH, configScriptsDir)
             else:
                 print ("Specified Blender userSetup script not found.")

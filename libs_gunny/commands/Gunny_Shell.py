@@ -151,7 +151,7 @@ class Shell(Command):
     def __init__(self, parser=None):
         self.debug_spec = None
         self.root_config = None
-        self.dcc_default_config = None
+        self.config_key = DESC_CONFIG_BLENDER
         super(Shell, self).__init__(parser)
 
 

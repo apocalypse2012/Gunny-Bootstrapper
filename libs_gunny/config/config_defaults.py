@@ -30,7 +30,7 @@ from constants import *
 CONFIG_VERSION = 1
 JSON_ENCODER_SPEC = ConfigEncoder()
 
-
+############
 ENVAR_VALUES = {ENVAR_GUNNY_ROOT: config_func.FindRootMarker(__file__),
                 ENVAR_TOOLS_PATH: '$' + ENVAR_GUNNY_ROOT + '\\' + 'tools',
                 ENVAR_DCC_PATH: '$' + ENVAR_GUNNY_ROOT + '\\' + 'DCC',
@@ -44,7 +44,7 @@ config_func.ENVAR_DEFAULTS = CONFIG_ENVAR = ENVAR_TYPE(**ENVAR_VALUES)._asdict()
 JSON_ENCODER_SPEC.add_mapping(ENVAR_TYPE)
 
 
-# Shared state for Configuration.
+############ Shared state for Configuration.
 CONFIG_INFO_DEFAULT = {
     COMMENT_QUALIFIER: defaults.INFO_CONFIG_COMMENT,
     ENVAR_COMPANY: 'GUNNY',
@@ -61,6 +61,7 @@ CONFIG_INFO = CONFIG_INFO_TYPE(**CONFIG_INFO_DEFAULT)._asdict()
 JSON_ENCODER_SPEC.add_mapping(CONFIG_INFO_TYPE)
 
 
+############
 CONFIG_GUNNY_DEFAULT = {
     COMMENT_QUALIFIER: defaults.MAX_PLAY_CONFIG_COMMENT,
     ENVAR_APPDATA: ConfigPath(paths=[ValidEnvars(ENVAR_APPDATA), ], flags=[
@@ -90,26 +91,125 @@ CONFIG_GUNNY = CONFIG_GUNNY_TYPE(**CONFIG_GUNNY_DEFAULT)._asdict()
 JSON_ENCODER_SPEC.add_mapping(CONFIG_GUNNY_TYPE)
 
 
+############
 CONFIG_DCC_TYPE = namedtuple(CONFIG_DCC_TYPENAME, (APP_ID, DESC_CONFIG_DCC, APP_VERSION, EXECUTABLE_COMMAND, BOOTSTRAP_TYPE,
                                                  BOOTSTRAP_FILE, REG_ENTRY_INSTALL, REG_PATH_INSTALL, ENV_PATH_INSTALL,
                                                  APP_ROOT_TYPE, APP_CONFIG_PATH, APP_PY_PACKAGES))
 JSON_ENCODER_SPEC.add_mapping(CONFIG_DCC_TYPE)
 
 
+############
 CONFIG_MAYA_TYPE = namedtuple(CONFIG_MAYA_TYPENAME, CONFIG_DCC_TYPE._fields+(MAYA_SCRIPT_PATH, XBMLANG_PATH, MAYA_PLUG_IN_PATH))
 JSON_ENCODER_SPEC.add_mapping(CONFIG_MAYA_TYPE)
 
 
+############
 CONFIG_3DSMAX_TYPE = namedtuple(CONFIG_3DSMAX_TYPENAME, CONFIG_DCC_TYPE._fields+(MAX_PLUGIN_PATH,))
 JSON_ENCODER_SPEC.add_mapping(CONFIG_3DSMAX_TYPE)
 
 
-CONFIGURATION_DEFAULT = {DESC_ENVAR: CONFIG_ENVAR,
-                         DESC_CONFIG_INFO: CONFIG_INFO,
-                         DESC_CONFIG_GUNNY: CONFIG_GUNNY,
-                         DESC_CONFIG_DCC: []
+
+############
+CONFIG_3DSMAX_2018_DEFAULT = {
+    APP_ID: 'b4d31e56-5b75-4020-9474-b5fcb1c6c7e7',
+    DESC_CONFIG_DCC: DESC_CONFIG_3DSMAX,
+    APP_VERSION: '20000',
+    EXECUTABLE_COMMAND: '3dsmax.exe -U PythonHost startup.py',
+    BOOTSTRAP_TYPE: "path",
+    BOOTSTRAP_FILE: "startup.ms",
+    REG_ENTRY_INSTALL: 'Installdir',
+    REG_PATH_INSTALL: 'SOFTWARE\\Autodesk\\3dsMax\\20.0',
+    ENV_PATH_INSTALL: 'ADSK_3DSMAX_X64_2018',
+    APP_ROOT_TYPE: ENVAR_DCC_PATH,
+    APP_CONFIG_PATH: ConfigPath(paths=["Max\\scripts",
+                                       "Max\\2018\\scripts"],
+                                flags=[ENVAR_DCC_PATH,
+                                       RELATIVE_PATH_FLAG]),
+    APP_PY_PACKAGES: ConfigPath(paths=["Max",
+                                       "Max\\2018"],
+                                flags=[ENVAR_DCC_PATH,
+                                       RELATIVE_PATH_FLAG,
+                                       PYTHON_PATH_FLAG]),
+    MAX_PLUGIN_PATH: ConfigPath(paths=["Max\\2018\\plugins"],
+                                     flags=[ENVAR_DCC_PATH,
+                                            RELATIVE_PATH_FLAG,
+                                            ENV_VAR_FLAG])
+}
+CONFIG_3DSMAX = CONFIG_3DSMAX_TYPE(**CONFIG_3DSMAX_2018_DEFAULT)._asdict()
+
+
+############
+CONFIG_MAYA_2017_DEFAULT= {
+    APP_ID: 'a5472549-704d-4505-a50d-ef3baeee87b2',
+    DESC_CONFIG_DCC: DESC_CONFIG_MAYA,
+    APP_VERSION: STR_2017,
+    EXECUTABLE_COMMAND: MAYA_RELATIVE_EXE_PATH,
+    BOOTSTRAP_TYPE: PYTHON_PATH,
+    BOOTSTRAP_FILE: MAYA_SETUP_FILE,
+    REG_ENTRY_INSTALL: MAYA_REG_KEY,
+    REG_PATH_INSTALL: MAYA_REG_PATH_2017,
+    ENV_PATH_INSTALL: MAYA_ENV_PATH,
+    APP_ROOT_TYPE: ENVAR_DCC_PATH,
+    APP_CONFIG_PATH: ConfigPath(paths=[MAYA_PATH_SCRIPTS],
+                                flags=[ENVAR_DCC_PATH,
+                                       RELATIVE_PATH_FLAG]),
+    APP_PY_PACKAGES: ConfigPath(paths=[DIR_MAYA],
+                                flags=[ENVAR_DCC_PATH,
+                                       RELATIVE_PATH_FLAG,
+                                       PYTHON_PATH_FLAG]),
+    MAYA_SCRIPT_PATH: ConfigPath(paths=[MAYA_PATH_SCRIPTS_2017,
+                                        MAYA_PATH_MEL_2017,
+                                        MAYA_PATH_PYTHON_2017,
+                                        MAYA_PATH_SCRIPTS,
+                                        MAYA_PATH_MEL,
+                                        MAYA_PATH_PYTHON],
+                                   flags=[ENVAR_DCC_PATH,
+                                          RELATIVE_PATH_FLAG,
+                                          ENV_VAR_FLAG,
+                                          PYTHON_PATH_FLAG]),
+    XBMLANG_PATH: ConfigPath(paths=[MAYA_PATH_ICONS],
+                              flags=[ENVAR_DCC_PATH,
+                                     RELATIVE_PATH_FLAG,
+                                     ENV_VAR_FLAG]),
+    MAYA_PLUG_IN_PATH: ConfigPath(paths=[MAYA_PATH_PLUGINS_2017],
+                                    flags=[ENVAR_DCC_PATH,
+                                           RELATIVE_PATH_FLAG,
+                                           ENV_VAR_FLAG])
+}
+CONFIG_MAYA = CONFIG_MAYA_TYPE(**CONFIG_MAYA_2017_DEFAULT)._asdict()
+
+
+############
+CONFIG_BLENDER_DEFAULT = {
+    APP_ID: '1b986ef9-72bf-4c21-8e0c-06df8e5acaa9',
+    DESC_CONFIG_DCC: DESC_CONFIG_BLENDER,
+    APP_VERSION: '',
+    EXECUTABLE_COMMAND: 'blender.exe',
+    BOOTSTRAP_TYPE: "BLENDER_USER_SCRIPTS",
+    BOOTSTRAP_FILE: "startup\\startup.py",
+    REG_ENTRY_INSTALL: '',
+    REG_PATH_INSTALL: 'SOFTWARE\\Classes\\blendfile\\shell\\open\\command',
+    ENV_PATH_INSTALL: '',
+    APP_ROOT_TYPE: ENVAR_DCC_PATH,
+    APP_CONFIG_PATH: ConfigPath(paths=["Blender\\scripts"],
+                                flags=[ENVAR_DCC_PATH,
+                                       RELATIVE_PATH_FLAG]),
+    APP_PY_PACKAGES: ConfigPath(paths=["Blender"],
+                                flags=[ENVAR_DCC_PATH,
+                                       RELATIVE_PATH_FLAG,
+                                       PYTHON_PATH_FLAG])
+}
+CONFIG_BLENDER = CONFIG_DCC_TYPE(**CONFIG_BLENDER_DEFAULT)._asdict()
+
+
+
+############
+CONFIGURATION_DEFAULT = {DESC_ENVAR: CONFIG_ENVAR, DESC_CONFIG_INFO: CONFIG_INFO, DESC_CONFIG_GUNNY: CONFIG_GUNNY,
+                         DESC_CONFIG_BLENDER: CONFIG_BLENDER_DEFAULT, DESC_CONFIG_MAYA: CONFIG_MAYA_2017_DEFAULT,
+                         DESC_CONFIG_3DSMAX: CONFIG_3DSMAX_2018_DEFAULT
                          }
-CONFIGURATION_TYPE = namedtuple(CONFIG_DATA_TYPENAME, (DESC_ENVAR, DESC_CONFIG_INFO, DESC_CONFIG_GUNNY, DESC_CONFIG_DCC))
+CONFIGURATION_TYPE = namedtuple(CONFIG_DATA_TYPENAME, (DESC_ENVAR, DESC_CONFIG_INFO, DESC_CONFIG_GUNNY, DESC_CONFIG_BLENDER,
+                                                       DESC_CONFIG_MAYA, DESC_CONFIG_3DSMAX))
 DEFAULT_CONFIGURATION = CONFIGURATION_TYPE(**CONFIGURATION_DEFAULT)._asdict()
 JSON_ENCODER_SPEC.add_mapping(CONFIGURATION_TYPE)
 

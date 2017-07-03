@@ -24,33 +24,6 @@ from libs_gunny.config.constants import *
 from libs_gunny.config.config_marshall import ConfigPath
 
 
-CONFIG_3DSMAX_2018_DEFAULT = {
-    APP_ID: 'b4d31e56-5b75-4020-9474-b5fcb1c6c7e7',
-    DESC_CONFIG_DCC: DESC_CONFIG_3DSMAX,
-    APP_VERSION: '20000',
-    EXECUTABLE_COMMAND: '3dsmax.exe -U PythonHost startup.py',
-    BOOTSTRAP_TYPE: "path",
-    BOOTSTRAP_FILE: "startup.ms",
-    REG_ENTRY_INSTALL: 'Installdir',
-    REG_PATH_INSTALL: 'SOFTWARE\\Autodesk\\3dsMax\\20.0',
-    ENV_PATH_INSTALL: 'ADSK_3DSMAX_X64_2018',
-    APP_ROOT_TYPE: ENVAR_DCC_PATH,
-    APP_CONFIG_PATH: ConfigPath(paths=["Max\\scripts",
-                                       "Max\\2018\\scripts"],
-                                flags=[ENVAR_DCC_PATH,
-                                       RELATIVE_PATH_FLAG]),
-    APP_PY_PACKAGES: ConfigPath(paths=["Max",
-                                       "Max\\2018"],
-                                flags=[ENVAR_DCC_PATH,
-                                       RELATIVE_PATH_FLAG,
-                                       PYTHON_PATH_FLAG]),
-    MAX_PLUGIN_PATH: ConfigPath(paths=["Max\\2018\\plugins"],
-                                     flags=[ENVAR_DCC_PATH,
-                                            RELATIVE_PATH_FLAG,
-                                            ENV_VAR_FLAG])
-}
-CONFIG_3DSMAX = config.config_defaults.CONFIG_3DSMAX_TYPE(**CONFIG_3DSMAX_2018_DEFAULT)._asdict()
-
 
 class StartMax_2018(Command):
 
@@ -66,9 +39,7 @@ class StartMax_2018(Command):
         self.max_scripts_dir = None
         self.debug_spec = None
         self.root_config = None
-        global CONFIG_3DSMAX
-        self.dcc_default_config = CONFIG_3DSMAX
-
+        self.config_key = DESC_CONFIG_3DSMAX
         super(StartMax_2018, self).__init__(parser)
 
 

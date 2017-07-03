@@ -64,12 +64,9 @@ class Command(object):
         setupLocation = util.GUNNY_ENTRYPOINT_PATH
         mp_root = config.config_func.FindRootMarker(setupLocation)
         config.config_func.SetEnvarDefaults(mp_root)
-        self.root_config = config.config_parse.Config_Parser()
+        self.root_config = config.config_parse.Config_Parser(self.config_key)
 
         if self.isValid:
-            if self.dcc_default_config is not None:
-                self.root_config.Add_DCC_Config(self.dcc_default_config)
-
             if parser is not None:
                 parserInst = parser.add_parser(self.__class__.__name__, help=self.PARSER_DESC)
                 self._registerArguments(parserInst)

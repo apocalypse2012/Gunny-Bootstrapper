@@ -24,46 +24,6 @@ from libs_gunny.config.constants import *
 from libs_gunny.config.config_marshall import ConfigPath
 
 
-CONFIG_MAYA_2017_DEFAULT= {
-    APP_ID: 'a5472549-704d-4505-a50d-ef3baeee87b2',
-    DESC_CONFIG_DCC: DESC_CONFIG_MAYA,
-    APP_VERSION: STR_2017,
-    EXECUTABLE_COMMAND: MAYA_RELATIVE_EXE_PATH,
-    BOOTSTRAP_TYPE: PYTHON_PATH,
-    BOOTSTRAP_FILE: MAYA_SETUP_FILE,
-    REG_ENTRY_INSTALL: MAYA_REG_KEY,
-    REG_PATH_INSTALL: MAYA_REG_PATH_2017,
-    ENV_PATH_INSTALL: MAYA_ENV_PATH,
-    APP_ROOT_TYPE: ENVAR_DCC_PATH,
-    APP_CONFIG_PATH: ConfigPath(paths=[MAYA_PATH_SCRIPTS],
-                                flags=[ENVAR_DCC_PATH,
-                                       RELATIVE_PATH_FLAG]),
-    APP_PY_PACKAGES: ConfigPath(paths=[DIR_MAYA],
-                                flags=[ENVAR_DCC_PATH,
-                                       RELATIVE_PATH_FLAG,
-                                       PYTHON_PATH_FLAG]),
-    MAYA_SCRIPT_PATH: ConfigPath(paths=[MAYA_PATH_SCRIPTS_2017,
-                                        MAYA_PATH_MEL_2017,
-                                        MAYA_PATH_PYTHON_2017,
-                                        MAYA_PATH_SCRIPTS,
-                                        MAYA_PATH_MEL,
-                                        MAYA_PATH_PYTHON],
-                                   flags=[ENVAR_DCC_PATH,
-                                          RELATIVE_PATH_FLAG,
-                                          ENV_VAR_FLAG,
-                                          PYTHON_PATH_FLAG]),
-    XBMLANG_PATH: ConfigPath(paths=[MAYA_PATH_ICONS],
-                              flags=[ENVAR_DCC_PATH,
-                                     RELATIVE_PATH_FLAG,
-                                     ENV_VAR_FLAG]),
-    MAYA_PLUG_IN_PATH: ConfigPath(paths=[MAYA_PATH_PLUGINS_2017],
-                                    flags=[ENVAR_DCC_PATH,
-                                           RELATIVE_PATH_FLAG,
-                                           ENV_VAR_FLAG])
-}
-CONFIG_MAYA = config.config_defaults.CONFIG_MAYA_TYPE(**CONFIG_MAYA_2017_DEFAULT)._asdict()
-
-
 class StartMaya_2017(Command):
 
     PARSER_DESC = 'Launch Maya with pipeline'
@@ -76,8 +36,8 @@ class StartMaya_2017(Command):
     def __init__(self, parser=None):
         self.maya_scripts_dir = None
         self.debug_spec = None
-        global CONFIG_MAYA
-        self.dcc_default_config = CONFIG_MAYA
+        self.root_config = None
+        self.config_key = DESC_CONFIG_MAYA
         super(StartMaya_2017, self).__init__(parser)
 
     def _registerArguments(self, parser):
