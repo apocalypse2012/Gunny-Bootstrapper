@@ -21,11 +21,9 @@ import os
 from .baseCommand import Command
 from libs_gunny import config
 from libs_gunny.config.constants import *
-from libs_gunny.config.config_marshall import ConfigPath
 
 
-
-class StartMax_2018(Command):
+class Max_2018(Command):
 
     PARSER_DESC = 'Launch 3dsmax with pipeline'
     # default max version if one is not specified
@@ -40,7 +38,7 @@ class StartMax_2018(Command):
         self.debug_spec = None
         self.root_config = None
         self.config_key = DESC_CONFIG_3DSMAX
-        super(StartMax_2018, self).__init__(parser)
+        super(Max_2018, self).__init__(parser)
 
 
     def _registerArguments(self, parser):
@@ -65,8 +63,6 @@ class StartMax_2018(Command):
         self.debug_spec = args.debug_spec
         return self
 
-## TODO: Modify bootstrap to reference a pipe object that is managed in this class through some kind of callback
-## TODO: Create a StartCommand function to run doCommand from a thread. Or optionally modify Bootstrap to be non-blocking.
 ## TODO: Add getters and setters for state variables.
 
     def doCommand(self):

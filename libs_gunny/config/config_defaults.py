@@ -30,6 +30,7 @@ from constants import *
 CONFIG_VERSION = 1
 JSON_ENCODER_SPEC = ConfigEncoder()
 
+#TODO: Key Values overlap in the non-DCC defaults. must Guarantee unique namespace
 ############
 ENVAR_VALUES = {ENVAR_GUNNY_ROOT: config_func.FindRootMarker(__file__),
                 ENVAR_TOOLS_PATH: '$' + ENVAR_GUNNY_ROOT + '\\' + 'tools',

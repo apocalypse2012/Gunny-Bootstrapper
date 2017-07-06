@@ -21,6 +21,7 @@ import json
 import site
 import shutil
 import exceptions
+import copy
 from collections import Mapping, Sequence, OrderedDict
 from config_marshall import ConfigPath, ValidEnvars, ConfigEncoder
 from config_func import updateEnvironmentPath, getEnvironmentPath, GetEnvarDefaults
@@ -107,37 +108,36 @@ class Config_Parser(object):
     as initiating loading, saving, and persistance of managed data in the OS environment.
     """
 
-    _CURRENT_CONFIG = None
-    _NAMING_SPEC = None
+    _CURRENT_CONFIG = OrderedDict()
 
-    def __init__(self, key = None):
+    def _set_CURRENT_CONFIG__(self, new_val, clean=False):
+        the_config = type(self)._CURRENT_CONFIG
+        deep_update(the_config, new_val, clean=clean)
+
+    def __init__(self, key=None):
         """
         Initialization of a new Config Parser object. This is responsible for defining and initializing the current
         configuration which is stored as a class variable. This insures that the configuration state follows a Borg
         pattern that is guaranteed to remain common to all instances.
         :param dcc_vers: This is an input to identify the application and Version of for Digital Content Creation.
         """
-        Config_Parser._NAMING_SPEC = None
         self._current_dcc = key
+        self._naming_spec = dict()
         self._default_config = config_defaults.DEFAULT_CONFIGURATION
 
-        if Config_Parser._CURRENT_CONFIG is None:
-            Config_Parser._CURRENT_CONFIG = OrderedDict()
-            deep_update(Config_Parser._CURRENT_CONFIG, self._default_config)
-
-            self._persistent_config = self._load_file_config()
-            deep_update(Config_Parser._CURRENT_CONFIG, self._persistent_config)
-
-            self._environment_config = self._get_env_config()
-            deep_update(Config_Parser._CURRENT_CONFIG, self._environment_config, clean=True)
+        if type(self)._CURRENT_CONFIG == OrderedDict():
+            self._set_CURRENT_CONFIG__(config_defaults.DEFAULT_CONFIGURATION)
+            self._set_CURRENT_CONFIG__(self._load_file_config())
+            self._set_CURRENT_CONFIG__(self._get_env_config(), clean=True)
 
         self._generate_config_attributes()
         self.SaveConfig()
 
-
     def __getattr__(self, name):
         fetch_name = self._get_param_name(name, self._current_dcc)
+        print("__getattr__ {}, {}, {}".format(name, self._current_dcc, fetch_name))
         if hasattr(self, fetch_name):
+            print("__getattr__\ hasattr(self, {})".format(fetch_name))
             return getattr(self, fetch_name)
 
     def _marchConfig(self, config=None):
@@ -149,7 +149,7 @@ class Config_Parser(object):
         :return: Tuple of attribute name, value, parent. Returns a valid index when matches the dcc version.
         """
         if config is None:
-            config = Config_Parser._CURRENT_CONFIG
+            config = type(self)._CURRENT_CONFIG
         for section, contents in config.iteritems():
             if contents is None:
                 print(section)
@@ -159,44 +159,51 @@ class Config_Parser(object):
                     yield (name, value, section)
 
     def _fill_namespec(self):
-        newDict = dict()
         ignore_section = [config_defaults.DESC_ENVAR, config_defaults.DESC_CONFIG_INFO,
                           config_defaults.DESC_CONFIG_GUNNY]
         for nm, val, stn in self._marchConfig():
             if stn in ignore_section:
-                continue
-            if isinstance(val, ConfigPath) and val.environment_variable:
-                continue
-            key = nm + '_' + stn
+                key = nm
+            elif isinstance(val, ConfigPath) and val.environment_variable:
+                key = nm
+            else:
+                key = nm + '_' + stn
             value = (nm, stn)
-            newDict[key] = value
-        Config_Parser._NAMING_SPEC = newDict
+            self._naming_spec[key] = value
+
+    def GetConfigNames(self):
+        for key, value in self._naming_spec.iteritems():
+            nm, stn = value
+            if stn == self._current_dcc:
+                yield key
+            elif stn not in key:
+                yield key
 
     def _get_param_name(self, name, section):
-        if Config_Parser._NAMING_SPEC is None:
+        if len(self._naming_spec) is 0:
             self._fill_namespec()
         fetch_name = name + '_' + section
-        if fetch_name in Config_Parser._NAMING_SPEC:
+        if fetch_name in self._naming_spec:
             return fetch_name
         else:
             return name
 
     def _get_structure_name(self, fetch_name):
-        if Config_Parser._NAMING_SPEC is None:
+        if len(self._naming_spec) is 0:
             self._fill_namespec()
-        if fetch_name in Config_Parser._NAMING_SPEC:
-            return Config_Parser._NAMING_SPEC[fetch_name]
+        if fetch_name in self._naming_spec:
+            return self._naming_spec[fetch_name]
 
     def SaveConfig(self):
         """
         Save the current configuration state.
         :return:
         """
-        default_path = str(Config_Parser._CURRENT_CONFIG[DESC_CONFIG_GUNNY][ENVAR_APPDATA].Paths[0])
+        default_path = str(type(self)._CURRENT_CONFIG[DESC_CONFIG_GUNNY][ENVAR_APPDATA].Paths[0])
         default_cfg_file = os.path.join(default_path, CONFIG_FILE_NAME)
         temp_file = default_cfg_file + '.TEMP'
         if os.path.exists(default_cfg_file):
-            json.dump(Config_Parser._CURRENT_CONFIG,
+            json.dump(type(self)._CURRENT_CONFIG,
                       open(temp_file.lower(),
                            mode='w'),
                       cls=ConfigEncoder,
@@ -206,7 +213,7 @@ class Config_Parser(object):
         else:
             if not os.path.isdir(default_path):
                 os.mkdir(default_path)
-            json.dump(Config_Parser._CURRENT_CONFIG,
+            json.dump(type(self)._CURRENT_CONFIG,
                       open(default_cfg_file.lower(),
                            mode='w'),
                       cls=ConfigEncoder,
@@ -218,14 +225,14 @@ class Config_Parser(object):
         Load configuration data from file.
         :return: loaded configuration data as an OrderedDict()
         """
-        default_path = Config_Parser._CURRENT_CONFIG[DESC_CONFIG_GUNNY][ENVAR_APPDATA].Paths[0]
+        default_path = type(self)._CURRENT_CONFIG[DESC_CONFIG_GUNNY][ENVAR_APPDATA].Paths[0]
         default_cfg_file = os.path.join(default_path, CONFIG_FILE_NAME)
         config_base = None
         if os.path.exists(default_cfg_file):
             config_base = json.load(open(default_cfg_file.lower(), mode='r'), object_hook=ConfigEncoder.class_mapper)
         if config_base is None or self._current_dcc not in config_base:
             self.SaveConfig()
-            config_base = Config_Parser._CURRENT_CONFIG
+            config_base = type(self)._CURRENT_CONFIG
         return config_base
 
     def SetPythonPaths(self):
@@ -251,7 +258,7 @@ class Config_Parser(object):
             self._set_env_prop(fetch_name, value)
 
     def _get_env_config(self):
-        env_config = deep_update({}, self._default_config, punk=True)
+        env_config = deep_update(OrderedDict(), self._default_config, punk=True)
         for name, value, section in self._marchConfig():
             fetch_name = self._get_param_name(name, section)
             val = self._get_env_prop(fetch_name, value)
@@ -262,20 +269,26 @@ class Config_Parser(object):
     #     return deep_update({}, self._default_config, punk=True)
 
     def _gettr_(self, name, section):
-        print('name: {}, section: {}'.format(name, section))
-        return Config_Parser._CURRENT_CONFIG[section][name]
+        # print('_gettr_ name: {}, section: {}'.format(name, section))
+        return type(self)._CURRENT_CONFIG[section][name]
 
     def _settr_(self, v, name, section):
-        print('v: {}, name: {}, section: {}'.format(v, name, section))
-        Config_Parser._CURRENT_CONFIG[section][name] = v
+        # print('_settr_ v: {}, name: {}, section: {}'.format(v, name, section))
+        type(self)._CURRENT_CONFIG[section][name] = v
         fetch_name = self._get_param_name(name, section)
         self._set_env_prop(fetch_name, v)
 
+    def _deltr_(self, name, section):
+        # print('_deltr_ name: {}, section: {}'.format(name, section))
+        self._settr_(None, name, section)
+
     def _make_property(self, name, section):
+        # print('_make_property name: {}, section: {}'.format(name, section))
         fetch_name = self._get_param_name(name, section)
-        setattr(Config_Parser, fetch_name, property(fget=lambda self, nm=name, scn=section: self._gettr_(nm, scn),
-                                              fset=lambda self, v, nm=name, scn=section: self._settr_(v, nm, scn),
-                                              fdel=lambda self, nm=name, scn=section: self._gettr_(nm, scn)))
+        setattr(type(self), fetch_name, property(fget=lambda self, nm=name, scn=section: self._gettr_(nm, scn),
+                                                    fset=lambda self, v, nm=name, scn=section: self._settr_(v, nm, scn),
+                                                    fdel=lambda self, nm=name, scn=section: self._gettr_(nm, scn),
+                                                    doc="Property \'{}\' on \'{}\'".format(name, section)))
 
     def _generate_config_attributes(self):
         for name, value, section in self._marchConfig():

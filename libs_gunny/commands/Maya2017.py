@@ -24,7 +24,7 @@ from libs_gunny.config.constants import *
 from libs_gunny.config.config_marshall import ConfigPath
 
 
-class StartMaya_2017(Command):
+class Maya_2017(Command):
 
     PARSER_DESC = 'Launch Maya with pipeline'
 
@@ -38,7 +38,7 @@ class StartMaya_2017(Command):
         self.debug_spec = None
         self.root_config = None
         self.config_key = DESC_CONFIG_MAYA
-        super(StartMaya_2017, self).__init__(parser)
+        super(Maya_2017, self).__init__(parser)
 
     def _registerArguments(self, parser):
 

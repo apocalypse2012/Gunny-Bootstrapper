@@ -22,6 +22,7 @@ import cmd
 import time
 import types
 import inspect
+from collections import OrderedDict
 from .baseCommand import Command, get_all_subclasses
 from libs_gunny import config
 from libs_gunny.config.constants import *
@@ -31,7 +32,7 @@ from libs_gunny.config.config_marshall import ConfigPath
 class InteractiveShell(cmd.Cmd):
     """Accepts commands via the normal interactive prompt or on the command line."""
 
-    prompt = 'Gunny: '
+    _prompt = 'Gunny: '
     intro = "Configuration and launch environment for Pipeline applications."
 
     #doc_header = 'doc_header'
@@ -43,7 +44,35 @@ class InteractiveShell(cmd.Cmd):
     def __init__(self, **kwargs):
         cmd.Cmd.__init__(self, **kwargs)
         self._commands = [obj() for obj in get_all_subclasses(Command) if obj is not Shell]
-        self._current = None
+        self._selection = OrderedDict()
+
+    @property
+    def _current(self):
+        keys = self._selection.keys()
+        if len(keys)>0:
+            lastKey = keys[-1]
+            return self._selection.get(lastKey)
+        else:
+            return None
+
+    @property
+    def prompt(self):
+        if self._current is None:
+            return 'Gunny: '
+        else:
+            present = '>'.join(self._selection.keys())
+            prompt = '{}: '.format(present)
+            return prompt
+
+    def _listCurAttributes(self):
+        propnames = []
+        if self._current in self._commands:
+            config = self._current.root_config
+            propnames = [key for key in config.GetConfigNames()]
+            propnames.sort()
+        elif type(self._current) is ConfigPath:
+            propnames = ['Paths', 'Flags']
+        return propnames
 
     def hold_and_clr(self, duration=3):
         time.sleep(duration)
@@ -54,84 +83,197 @@ class InteractiveShell(cmd.Cmd):
         print(self.intro)
         return line
 
-    def do_Select(self, command):
-        command = command.lower()
-        if 'none' in command:
-            self._current = None
-            self.prompt = 'Gunny: '
-            return
-        for object in self._commands:
-            if object.__class__.__name__.lower() in command:
-                self._current = object
-                self.prompt = object.__class__.__name__ + ': '
-                return
-        print('\nWarning, DCC application selection not recognized: {}\n'.format(command))
+    def do_Select(self, line):
+        selected = line.lower()
+        names = self._listCurAttributes()
+        if self._current is None:
+            for launcher in self._commands:
+                if launcher.__class__.__name__.lower() in selected:
+                    self._selection[line] = launcher
+                    return
+        else:
+            if isinstance(self._current, Command):
+                config = self._current.root_config
+            else:
+                config = self._current
+            if line in names:
+                new_selection = getattr(config, line)
+                if isinstance(new_selection, ConfigPath):
+                    self._selection[line] = new_selection
+                    return
+        print('\nWarning, DCC application selection not recognized: {}\n'.format(line))
+
+    def do_Deselect(self, trash):
+        if self._current is not None:
+            self._selection.popitem()
+
+    def help_Deselect(self):
+        return "Stuff and things"
 
     def help_Select(self):
-        print('\nSelect [launcher]\n')
-        for object in self._commands:
-            helpStr = getattr(object, 'PARSER_DESC')
-            padStr = '                    '
-            nameStr = object.__class__.__name__
-            nameStr = nameStr + ':' + padStr[len(nameStr):]
-            print('\t{}\t\t{}'.format(nameStr, helpStr))
+        print('\nSelect [object/attribute]\n')
+        padStr = '                         '
+        nameStr = helpStr = ''
+        if self._current is None:
+            for object in self._commands:
+                helpStr = getattr(object, 'PARSER_DESC')
+                nameStr = object.__class__.__name__
+                nameStr = nameStr + ':' + padStr[len(nameStr):]
+                print('\t{}\t\t{}'.format(nameStr, helpStr))
+        else:
+            names = self._listCurAttributes()
+            for name in names:
+                if isinstance(self._current, Command):
+                    config = self._current.root_config
+                    value = getattr(config, name)
+                    helpStr = config.__class__.__name__ + '.' + getattr(config, '_current_dcc')
+                    if type(value) is ConfigPath:
+                        nameStr = name + ':' + padStr[len(name):]
+                        print('\t{}\t\t{}'.format(nameStr, helpStr))
         print('\n')
 
-    def do_Launch(self, command):
-        if self._current is not None:
-            getattr(self._current, 'doCommand')()
+    def do_Launch(self, line):
+        launcher = None
+        if self._current in self._commands:
+            launcher = self._current
+        else:
+            for command_object in self._selection.values():
+                if command_object in self._commands:
+                    launcher = command_object
+        if launcher is not None:
+            getattr(launcher, 'doCommand')()
         else:
             print('\nNo selected DCC Application to Launch...\nPlease use \'Select\' first.\n')
 
     def help_Launch(self):
         print('\nLaunch the currently selected DCC application: {}\n'.format(self._current.__class__.__name__))
 
-    # TODO: Make Setter and Getters for config attributes. Also Help and Save.
-    # TODO: Also, current shell does not filter for valid command classes.
-    # def _listCurAttributes(self):
-    #     config = self._current.root_config
-    #     propnames = [name for (name, value) in inspect.getmembers(config, lambda o: isinstance(o, property))]
-    #     return propnames
-    #
-    # def do_GetConfig(self, param):
-    #     if self._current is not None:
-    #         config = self._current.root_config
-    #         if hasattr(config, param):
-    #             selName = self._current.__class__.__name__
-    #             value = getattr(config, param)
-    #             print('{}, {}, {}'.format(selName, param, value))
-    #     else:
-    #         print('\nNo selected DCC Application to configure...\nPlease use \'Select\' first.\n')
-    #
-    # def help_GetConfig(self):
-    #     props = self._listCurAttributes()
-    #     print('\nGetConfig [Attribute]\n')
-    #     for name in props:
-    #         padStr = '                    '
-    #         nameStr = name + ':' + padStr[len(name):]
-    #         print('\t{}'.format(nameStr))
-    #     print('\n')
-    #
-    # def do_SetConfig(self, param):
-    #     if self._current is not None:
-    #         config = self._current.root_config
-    #     else:
-    #         print('\nNo selected DCC Application to configure...\nPlease use \'Select\' first.\n')
+    def do_Get(self, line):
+        selName = param = value = None
+        if self._current is not None:
+            names = self._listCurAttributes()
+            selName = self._current.__class__.__name__
+            if line in names:
+                if isinstance(self._current, Command):
+                    config = self._current.root_config
+                    if hasattr(config, line):
+                        value = getattr(config, line)
+                elif isinstance(self._current, ConfigPath):
+                    if hasattr(self._current, line):
+                        valueList = getattr(self._current, line)
+                        value = ';'.join(valueList)
+                else:
+                    if hasattr(self._current, line):
+                        value = getattr(self._current, line)
+        if value is not None:
+            print('The value of {} in {} is \n\n\t{}\n'.format(line, selName, value))
+        else:
+            print('Attribute name not recognized or supported on the currently selected object.')
+
+    def help_Get(self):
+        print('Get the value of the requested configuration attribute.')
+
+    def do_Attributes(self, line):
+        if self._current is not None:
+            props = self._listCurAttributes()
+            if self._current in self._commands:
+                config = self._current.root_config
+            else:
+                config = self._current
+            presentData = ''
+            for name in props:
+                value = getattr(config, name)
+                if type(value) is ConfigPath:
+                    continue
+                padStr = '                              '
+                nameStr = name + ':' + padStr[len(name):]
+                newValue = '\t{}{}\n'.format(nameStr, value)
+                presentData += newValue
+            print('\nGetConfig [Attribute]\n')
+            print(presentData)
+            print('\n')
+        else:
+            print('\nNo selected DCC Application to configure...\nPlease use \'Select\' first.\n')
+
+    def help_Attributes(self):
+        print('Get editable attribute names for the selected DCC application config.')
+
+    def do_Set(self, line):
+        args = line.split()
+        if len(args) > 1:
+            param, value = args[:2]
+        else:
+            return
+        if self._current is not None:
+            props = self._listCurAttributes()
+            if param in props:
+                if type(self._current) is ConfigPath:
+                    #TODO: Updated ConfigPath objects are not persisting on the parent.
+                    old_param, old_value = self._selection.popitem()
+                    old_path = old_value.toDict()
+                    fix_Param_Case = param.lower()
+                    old_path[fix_Param_Case] = value.split(';')
+                    new_path = ConfigPath(**old_path)
+                    setattr(self._current, old_param, new_path)
+                    self._selection[old_param] = new_path
+                else:
+                    config = self._current if self._current not in self._commands else self._current.root_config
+                    old = getattr(config, param)
+                    value = type(old)(value)
+                    setattr(config, param, value)
+            else:
+                print('\nConfiguration attribute is not assignable...\n')
+        else:
+            print('\nNo selected DCC Application to configure...\nPlease use \'Select\' first.\n')
+
+    def help_Set(self):
+        print('Assign a value to the referenced attribute for the selected DCC application config.')
+
+    def do_Save(self, line):
+        if self._current is not None:
+            searchSet = set(self._selection.values())
+            sourceSet = set(self._commands)
+            saveObj = searchSet.intersection(sourceSet).pop()
+            saveObj.root_config.SaveConfig()
+            print('Modified Config attributes are now saved to Gunny AppData.')
+        else:
+            print('\nNo selected DCC Application to configure...\nPlease use \'Select\' first.\n')
+
+    def help_Save(self):
+        print('Save configuration changes to file.')
 
     def default(self, line):
-        if 'select' in line:
-            args = line[len('select'):].lstrip()
-            self.do_Select(args)
-        elif 'launch' in line:
-            args = line[len('launch'):].lstrip()
-            self.do_Launch(args)
-        elif 'quit' in line or 'exit' in line or 'end' in line:
-            self.hold_and_clr(0)
-            return True
-        elif 'Help' in line:
-            pass
-        else:
-            print('\nWarning, Unrecognized command: {}\n'.format(line))
+        try:
+            if 'deselect' in line.lower():
+                args = line[len('deselect'):].lstrip()
+                self.do_Deselect(args)
+            elif 'select' in line.lower():
+                args = line[len('select'):].lstrip()
+                self.do_Select(args)
+            elif 'launch' in line.lower():
+                args = line[len('launch'):].lstrip()
+                self.do_Launch(args)
+            elif 'get' in line.lower():
+                args = line[len('get'):].lstrip()
+                self.do_Get(args)
+            elif 'attributes' in line.lower():
+                args = line[len('attributes'):].lstrip()
+                self.do_Attributes(args)
+            elif 'set' in line.lower():
+                args = line[len('set'):].lstrip()
+                self.do_Set(args)
+            elif 'save' in line.lower():
+                args = line[len('save'):].lstrip()
+                self.do_Save(args)
+            elif 'quit' in line.lower() or 'exit' in line.lower() or 'end' in line.lower():
+                self.hold_and_clr(0)
+                return True
+            elif 'help' in line.lower():
+                pass
+            else:
+                print('\nWarning, Unrecognized command: {}\n'.format(line))
+        except TypeError:
+            print('\nNo selected DCC Application to configure...\nPlease use \'Select\' first.\n')
 
     def do_EOF(self, line):
         return True

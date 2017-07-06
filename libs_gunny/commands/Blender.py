@@ -24,7 +24,7 @@ from libs_gunny.config.constants import *
 from libs_gunny.config.config_marshall import ConfigPath
 
 
-class StartBlender(Command):
+class Blender(Command):
 
     PARSER_DESC = 'Launch Blender with pipeline'
     # default debugger
@@ -37,7 +37,7 @@ class StartBlender(Command):
         self.debug_spec = None
         self.root_config = None
         self.config_key = DESC_CONFIG_BLENDER
-        super(StartBlender, self).__init__(parser)
+        super(Blender, self).__init__(parser)
 
     def _registerArguments(self, parser):
 
