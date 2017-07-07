@@ -208,13 +208,12 @@ class InteractiveShell(cmd.Cmd):
             props = self._listCurAttributes()
             if param in props:
                 if type(self._current) is ConfigPath:
-                    #TODO: Updated ConfigPath objects are not persisting on the parent.
                     old_param, old_value = self._selection.popitem()
                     old_path = old_value.toDict()
                     fix_Param_Case = param.lower()
                     old_path[fix_Param_Case] = value.split(';')
                     new_path = ConfigPath(**old_path)
-                    setattr(self._current, old_param, new_path)
+                    setattr(self._current.root_config, old_param, new_path)
                     self._selection[old_param] = new_path
                 else:
                     config = self._current if self._current not in self._commands else self._current.root_config

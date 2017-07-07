@@ -30,7 +30,6 @@ from constants import *
 CONFIG_VERSION = 1
 JSON_ENCODER_SPEC = ConfigEncoder()
 
-#TODO: Key Values overlap in the non-DCC defaults. must Guarantee unique namespace
 ############
 ENVAR_VALUES = {ENVAR_GUNNY_ROOT: config_func.FindRootMarker(__file__),
                 ENVAR_TOOLS_PATH: '$' + ENVAR_GUNNY_ROOT + '\\' + 'tools',
@@ -65,28 +64,21 @@ JSON_ENCODER_SPEC.add_mapping(CONFIG_INFO_TYPE)
 ############
 CONFIG_GUNNY_DEFAULT = {
     COMMENT_QUALIFIER: defaults.MAX_PLAY_CONFIG_COMMENT,
-    ENVAR_APPDATA: ConfigPath(paths=[ValidEnvars(ENVAR_APPDATA), ], flags=[
-                               ABSOLUTE_PATH_FLAG,
-                               ENV_VAR_FLAG]),
-    ENVAR_GUNNY_ROOT: ConfigPath(paths=[ValidEnvars(ENVAR_GUNNY_ROOT), ], flags=[
-                               ABSOLUTE_PATH_FLAG,
-                               ENV_VAR_FLAG]),
-    ENVAR_TOOLS_PATH: ConfigPath(paths=[ValidEnvars(ENVAR_TOOLS_PATH), ], flags=[
-                               ABSOLUTE_PATH_FLAG,
-                               ENV_VAR_FLAG]),
-    ENVAR_PY_PACKAGES_PATH: ConfigPath(paths=[ValidEnvars(ENVAR_PY_PACKAGES_PATH), ], flags=[
-                                     ABSOLUTE_PATH_FLAG,
-                                     ENV_VAR_FLAG,
-                                     PYTHON_PATH_FLAG]),
-    ENVAR_PY_PACKAGES_3RDPARTY_PATH: ConfigPath(paths=[ValidEnvars(ENVAR_PY_PACKAGES_3RDPARTY_PATH), ], flags=[
-                                              ABSOLUTE_PATH_FLAG,
-                                              ENV_VAR_FLAG,
-                                              PYTHON_PATH_FLAG]),
+    APPDATA: ConfigPath(paths=[ValidEnvars(ENVAR_APPDATA), ], flags=[
+                               ABSOLUTE_PATH_FLAG, ]),
+    GUNNY_ROOT: ConfigPath(paths=[ValidEnvars(ENVAR_GUNNY_ROOT), ], flags=[
+                               ABSOLUTE_PATH_FLAG, ]),
+    TOOLS_PATH: ConfigPath(paths=[ValidEnvars(ENVAR_TOOLS_PATH), ], flags=[
+                               ABSOLUTE_PATH_FLAG, ]),
+    PY_PACKAGES_PATH: ConfigPath(paths=[ValidEnvars(ENVAR_PY_PACKAGES_PATH), ], flags=[
+                                     ABSOLUTE_PATH_FLAG, PYTHON_PATH_FLAG]),
+    PY_PACKAGES_3RDPARTY_PATH: ConfigPath(paths=[ValidEnvars(ENVAR_PY_PACKAGES_3RDPARTY_PATH), ], flags=[
+                                              ABSOLUTE_PATH_FLAG, PYTHON_PATH_FLAG]),
     TEMPLATE_QUALIFIER+str('1'): defaults.GUNNY_CONFIG_TEMPLATE1,
     TEMPLATE_QUALIFIER+str('2'): defaults.GUNNY_CONFIG_TEMPLATE2
 }
-CONFIG_GUNNY_TYPE = namedtuple(CONFIG_GUNNY_TYPENAME, (COMMENT_QUALIFIER, ENVAR_APPDATA, ENVAR_GUNNY_ROOT, ENVAR_TOOLS_PATH,
-                                                       ENVAR_PY_PACKAGES_PATH, ENVAR_PY_PACKAGES_3RDPARTY_PATH,
+CONFIG_GUNNY_TYPE = namedtuple(CONFIG_GUNNY_TYPENAME, (COMMENT_QUALIFIER, APPDATA, GUNNY_ROOT, TOOLS_PATH,
+                                                       PY_PACKAGES_PATH, PY_PACKAGES_3RDPARTY_PATH,
                                                        TEMPLATE_QUALIFIER + str('1'), TEMPLATE_QUALIFIER + str('2')))
 CONFIG_GUNNY = CONFIG_GUNNY_TYPE(**CONFIG_GUNNY_DEFAULT)._asdict()
 JSON_ENCODER_SPEC.add_mapping(CONFIG_GUNNY_TYPE)

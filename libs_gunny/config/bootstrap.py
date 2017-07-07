@@ -72,7 +72,7 @@ def GetBootStrapScript(app_config):
     #     raise BootstrapNotFound('script_path: {}'.format(appConfigPath.Paths))
     return validPaths
 
-
+#TODO: Add config based switch for non-blocking launch call.
 def BootstrapApp(app_config):
     pathsvar = getattr(app_config, BOOTSTRAP_TYPE)
     startPath = GetBootStrapScript(app_config)

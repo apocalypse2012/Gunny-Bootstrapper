@@ -199,7 +199,7 @@ class Config_Parser(object):
         Save the current configuration state.
         :return:
         """
-        default_path = str(type(self)._CURRENT_CONFIG[DESC_CONFIG_GUNNY][ENVAR_APPDATA].Paths[0])
+        default_path = str(type(self)._CURRENT_CONFIG[DESC_CONFIG_GUNNY][APPDATA].Paths[0])
         default_cfg_file = os.path.join(default_path, CONFIG_FILE_NAME)
         temp_file = default_cfg_file + '.TEMP'
         if os.path.exists(default_cfg_file):
@@ -225,7 +225,7 @@ class Config_Parser(object):
         Load configuration data from file.
         :return: loaded configuration data as an OrderedDict()
         """
-        default_path = type(self)._CURRENT_CONFIG[DESC_CONFIG_GUNNY][ENVAR_APPDATA].Paths[0]
+        default_path = type(self)._CURRENT_CONFIG[DESC_CONFIG_GUNNY][APPDATA].Paths[0]
         default_cfg_file = os.path.join(default_path, CONFIG_FILE_NAME)
         config_base = None
         if os.path.exists(default_cfg_file):

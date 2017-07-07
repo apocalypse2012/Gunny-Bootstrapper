@@ -63,8 +63,6 @@ class Max_2018(Command):
         self.debug_spec = args.debug_spec
         return self
 
-## TODO: Add getters and setters for state variables.
-
     def doCommand(self):
         """ execute the intended procedure. """
 
