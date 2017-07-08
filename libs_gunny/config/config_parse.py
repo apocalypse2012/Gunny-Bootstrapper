@@ -135,9 +135,9 @@ class Config_Parser(object):
 
     def __getattr__(self, name):
         fetch_name = self._get_param_name(name, self._current_dcc)
-        print("__getattr__ {}, {}, {}".format(name, self._current_dcc, fetch_name))
+        #print("Config_Parser.__getattr__ {}, {}, {}".format(name, self._current_dcc, fetch_name))
         if hasattr(self, fetch_name):
-            print("__getattr__\ hasattr(self, {})".format(fetch_name))
+            #print("Config_Parser.__getattr__\ hasattr(self, {})".format(fetch_name))
             return getattr(self, fetch_name)
 
     def _marchConfig(self, config=None):
@@ -152,7 +152,6 @@ class Config_Parser(object):
             config = type(self)._CURRENT_CONFIG
         for section, contents in config.iteritems():
             if contents is None:
-                print(section)
                 raise Exception
             for name, value in contents.iteritems():
                 if not ignorable(name):
@@ -269,21 +268,17 @@ class Config_Parser(object):
     #     return deep_update({}, self._default_config, punk=True)
 
     def _gettr_(self, name, section):
-        # print('_gettr_ name: {}, section: {}'.format(name, section))
         return type(self)._CURRENT_CONFIG[section][name]
 
     def _settr_(self, v, name, section):
-        # print('_settr_ v: {}, name: {}, section: {}'.format(v, name, section))
         type(self)._CURRENT_CONFIG[section][name] = v
         fetch_name = self._get_param_name(name, section)
         self._set_env_prop(fetch_name, v)
 
     def _deltr_(self, name, section):
-        # print('_deltr_ name: {}, section: {}'.format(name, section))
         self._settr_(None, name, section)
 
     def _make_property(self, name, section):
-        # print('_make_property name: {}, section: {}'.format(name, section))
         fetch_name = self._get_param_name(name, section)
         setattr(type(self), fetch_name, property(fget=lambda self, nm=name, scn=section: self._gettr_(nm, scn),
                                                     fset=lambda self, v, nm=name, scn=section: self._settr_(v, nm, scn),

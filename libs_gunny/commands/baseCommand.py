@@ -20,7 +20,8 @@ instance returned, then registers a callback to another internal method that cap
 """
 
 import abc
-import os.path
+import os.path, os, time
+import subprocess
 from libs_gunny import config
 from libs_gunny.commands import util
 from libs_gunny.config.constants import *
@@ -60,7 +61,7 @@ class Command(object):
     PARSER_DESC = 'Should never see this. Override in derived class.'
 
     def __init__(self, parser):
-
+        self.proc = None
         setupLocation = util.GUNNY_ENTRYPOINT_PATH
         mp_root = config.config_func.FindRootMarker(setupLocation)
         config.config_func.SetEnvarDefaults(mp_root)
@@ -93,4 +94,26 @@ class Command(object):
         """ execute the intended procedure. """
         return
 
+    def launch(self):
+        self.root_config.SetEnvironmentVars()
+        self.root_config.SetPythonPaths()
+        dccRunTime, new_env = config.bootstrap.BootstrapApp(self.root_config)
+        retCode = subprocess.call(dccRunTime, env=new_env)
+        return retCode
+
+    def run(self):
+        self.root_config.SetEnvironmentVars()
+        self.root_config.SetPythonPaths()
+        dcc_runtime, new_env = config.bootstrap.BootstrapApp(self.root_config)
+        print('run: {}'.format(dcc_runtime))
+        if self.proc is not None:
+            self.proc.terminate()
+        #TODO: Replace this hack with something more robust.
+        DEVNULL = open(os.devnull, 'wb')
+        self.proc = subprocess.Popen(dcc_runtime, stdout=DEVNULL, env=new_env)
+        time.sleep(2)
+
+    def stop(self):
+        if self.proc is not None:
+            self.proc.terminate()
 

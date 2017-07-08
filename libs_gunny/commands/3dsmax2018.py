@@ -78,8 +78,4 @@ class Max_2018(Command):
                 print ("Specified 3dsmax userSetup script not found.")
                 print ("Using fall back configuration.")
 
-        self.root_config.SetEnvironmentVars()
-        self.root_config.SetPythonPaths()
-        retCode = config.bootstrap.BootstrapApp(self.root_config)
-        return retCode
-
+        return self.launch()

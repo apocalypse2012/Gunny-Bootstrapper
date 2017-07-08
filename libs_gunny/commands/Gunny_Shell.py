@@ -132,7 +132,7 @@ class InteractiveShell(cmd.Cmd):
                         print('\t{}\t\t{}'.format(nameStr, helpStr))
         print('\n')
 
-    def do_Launch(self, line):
+    def do_Run(self, line):
         launcher = None
         if self._current in self._commands:
             launcher = self._current
@@ -141,12 +141,28 @@ class InteractiveShell(cmd.Cmd):
                 if command_object in self._commands:
                     launcher = command_object
         if launcher is not None:
-            getattr(launcher, 'doCommand')()
+            getattr(launcher, 'run')()
         else:
-            print('\nNo selected DCC Application to Launch...\nPlease use \'Select\' first.\n')
+            print('\nNo selected DCC Application to Run...\nPlease use \'Select\' first.\n')
 
-    def help_Launch(self):
-        print('\nLaunch the currently selected DCC application: {}\n'.format(self._current.__class__.__name__))
+    def help_Run(self):
+        print('\nRun the currently selected DCC application: {}\n'.format(self._current.__class__.__name__))
+
+    def do_Stop(self, line):
+        launcher = None
+        if self._current in self._commands:
+            launcher = self._current
+        else:
+            for command_object in self._selection.values():
+                if command_object in self._commands:
+                    launcher = command_object
+        if launcher is not None:
+            getattr(launcher, 'stop')()
+        else:
+            print('\nNo selected DCC Application to Stop...\nPlease use \'Select\' first.\n')
+
+    def help_Stop(self):
+        print('\nStop the currently selected DCC application: {}\n'.format(self._current.__class__.__name__))
 
     def do_Get(self, line):
         selName = param = value = None
@@ -251,7 +267,7 @@ class InteractiveShell(cmd.Cmd):
                 self.do_Select(args)
             elif 'launch' in line.lower():
                 args = line[len('launch'):].lstrip()
-                self.do_Launch(args)
+                self.do_Run(args)
             elif 'get' in line.lower():
                 args = line[len('get'):].lstrip()
                 self.do_Get(args)

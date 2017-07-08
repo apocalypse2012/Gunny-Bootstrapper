@@ -61,6 +61,7 @@ class Blender(Command):
         self.debug_spec = args.debug_spec
         return self
 
+
     def doCommand(self):
         """ execute the intended procedure. """
 
@@ -76,8 +77,5 @@ class Blender(Command):
                 print ("Specified Blender userSetup script not found.")
                 print ("Using fall back configuration.")
 
-        self.root_config.SetEnvironmentVars()
-        self.root_config.SetPythonPaths()
-        retCode = config.bootstrap.BootstrapApp(self.root_config)
-        return retCode
+        return self.launch()
 

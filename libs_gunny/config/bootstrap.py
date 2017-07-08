@@ -16,7 +16,6 @@ Module Documentation: MpPy\mp_config\environment_lib.py
 < document module here>
 """
 
-import subprocess
 import exceptions
 from constants import *
 import config_func
@@ -68,17 +67,17 @@ def GetBootStrapScript(app_config):
     for path in appConfigPath.Paths:
         if os.path.exists(os.path.join(path, filename)):
             validPaths.append(path)
-    # if not validPaths:
-    #     raise BootstrapNotFound('script_path: {}'.format(appConfigPath.Paths))
     return validPaths
 
+
 #TODO: Add config based switch for non-blocking launch call.
-def BootstrapApp(app_config):
+def BootstrapApp(app_config, non_blocking=False):
     pathsvar = getattr(app_config, BOOTSTRAP_TYPE)
     startPath = GetBootStrapScript(app_config)
     config_func.updateEnvironmentPath(pathsvar, startPath)
-    dccRunTime = GetInstalledApp(app_config)
-
     new_env = os.environ.copy()
-    retCode = subprocess.call(dccRunTime, env=new_env)
-    return retCode
+    dccRunTime = GetInstalledApp(app_config)
+    return dccRunTime, new_env
+
+    # retCode = subprocess.call(dccRunTime, env=new_env)
+    # return retCode

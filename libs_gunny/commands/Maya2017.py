@@ -77,8 +77,5 @@ class Maya_2017(Command):
                 print ("~ {0}: Specified Maya userSetup script not found.".format(__file__))
                 print ("~ {0}: Using fall back configuration.".format(__file__))
 
-        self.root_config.SetEnvironmentVars()
-        self.root_config.SetPythonPaths()
-        retCode = config.bootstrap.BootstrapApp(self.root_config)
-        return retCode
+        return self.launch()
 
