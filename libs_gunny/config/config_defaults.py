@@ -64,16 +64,23 @@ JSON_ENCODER_SPEC.add_mapping(CONFIG_INFO_TYPE)
 ############
 CONFIG_GUNNY_DEFAULT = {
     COMMENT_QUALIFIER: defaults.MAX_PLAY_CONFIG_COMMENT,
-    APPDATA: ConfigPath(paths=[ValidEnvars(ENVAR_APPDATA), ], flags=[
-                               ABSOLUTE_PATH_FLAG, ]),
-    GUNNY_ROOT: ConfigPath(paths=[ValidEnvars(ENVAR_GUNNY_ROOT), ], flags=[
-                               ABSOLUTE_PATH_FLAG, ]),
-    TOOLS_PATH: ConfigPath(paths=[ValidEnvars(ENVAR_TOOLS_PATH), ], flags=[
-                               ABSOLUTE_PATH_FLAG, ]),
-    PY_PACKAGES_PATH: ConfigPath(paths=[ValidEnvars(ENVAR_PY_PACKAGES_PATH), ], flags=[
-                                     ABSOLUTE_PATH_FLAG, PYTHON_PATH_FLAG]),
-    PY_PACKAGES_3RDPARTY_PATH: ConfigPath(paths=[ValidEnvars(ENVAR_PY_PACKAGES_3RDPARTY_PATH), ], flags=[
-                                              ABSOLUTE_PATH_FLAG, PYTHON_PATH_FLAG]),
+    APPDATA: ConfigPath(paths=["", ],
+                        flags=[ENVAR_APPDATA,
+                               RELATIVE_PATH_FLAG, ]),
+    GUNNY_ROOT: ConfigPath(paths=["", ],
+                           flags=[ENVAR_GUNNY_ROOT,
+                                  RELATIVE_PATH_FLAG, ]),
+    TOOLS_PATH: ConfigPath(paths=["", ],
+                           flags=[ENVAR_TOOLS_PATH,
+                                  RELATIVE_PATH_FLAG, ]),
+    PY_PACKAGES_PATH: ConfigPath(paths=["", ],
+                                 flags=[ENVAR_PY_PACKAGES_PATH,
+                                        RELATIVE_PATH_FLAG,
+                                        PYTHON_PATH_FLAG]),
+    PY_PACKAGES_3RDPARTY_PATH: ConfigPath(paths=["", ],
+                                          flags=[ENVAR_PY_PACKAGES_3RDPARTY_PATH,
+                                                 RELATIVE_PATH_FLAG,
+                                                 PYTHON_PATH_FLAG]),
     TEMPLATE_QUALIFIER+str('1'): defaults.GUNNY_CONFIG_TEMPLATE1,
     TEMPLATE_QUALIFIER+str('2'): defaults.GUNNY_CONFIG_TEMPLATE2
 }
@@ -206,6 +213,7 @@ CONFIGURATION_TYPE = namedtuple(CONFIG_DATA_TYPENAME, (DESC_ENVAR, DESC_CONFIG_I
 DEFAULT_CONFIGURATION = CONFIGURATION_TYPE(**CONFIGURATION_DEFAULT)._asdict()
 JSON_ENCODER_SPEC.add_mapping(CONFIGURATION_TYPE)
 
+IGNORE_CONFIG_BLOCK = [DESC_ENVAR, DESC_CONFIG_INFO, DESC_CONFIG_GUNNY]
 
 
 

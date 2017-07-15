@@ -71,7 +71,7 @@ def updateEnvironmentPath(envar, newpath):
     """
     delimiter = ';'
     pathStr = os.getenv(envar)
-    if not pathStr is None and delimiter in pathStr:
+    if pathStr is not None and delimiter in pathStr:
         pathList = set(pathStr.split(delimiter))
         pathList.update(set(newpath))
         pathStr = ';'.join(pathList)
@@ -94,12 +94,18 @@ def getEnvironmentPath(envar, root=None):
             pathList = set(pathStr.split(delimiter))
             collected = set()
             for path in pathList:
-                if not root or root in path:
+                if not root:
                     collected.add(path)
+                elif root in path:
+                    rel_path = os.path.relpath(path, root)
+                    collected.add(rel_path)
             return list(collected)
         else:
             if not root or root in pathStr:
                 return [pathStr]
+            elif root in pathStr:
+                rel_path = os.path.relpath(pathStr, root)
+                return [rel_path]
     return list()
 
 

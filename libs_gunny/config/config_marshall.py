@@ -37,11 +37,12 @@ class ValidEnvars(object):
     def __repr__(self):
         return "ValidEnvars(theEnVar={})".format(self._enVar)
 
-
+#TODO: Valid state is not gauranteed. Trap bad states in the future like relative path assignment with no relative path type.
 class ConfigPath(object):
 
     def __init__(self, paths=[], flags=[]):
-        self._paths = paths
+        self._paths = []
+        self._root = None
         if isinstance(paths, basestring):
             self._paths = [paths]
         if isinstance(flags, basestring):
@@ -52,25 +53,30 @@ class ConfigPath(object):
         self._pythonFlag = PYTHON_PATH_FLAG in flags
 
         if ENVAR_GUNNY_ROOT in flags:
-            self._rootType = ENVAR_GUNNY_ROOT
-            self._root = ValidEnvars(ENVAR_GUNNY_ROOT)
+            self._set_relative_paths_(ENVAR_GUNNY_ROOT, paths)
         elif ENVAR_TOOLS_PATH in flags:
-            self._rootType = ENVAR_TOOLS_PATH
-            self._root = ValidEnvars(ENVAR_TOOLS_PATH)
+            self._set_relative_paths_(ENVAR_TOOLS_PATH, paths)
         elif ENVAR_DCC_PATH in flags:
-            self._rootType = ENVAR_DCC_PATH
-            self._root = ValidEnvars(ENVAR_DCC_PATH)
+            self._set_relative_paths_(ENVAR_DCC_PATH, paths)
         elif ENVAR_PY_PACKAGES_PATH in flags:
-            self._rootType = ENVAR_PY_PACKAGES_PATH
-            self._root = ValidEnvars(ENVAR_PY_PACKAGES_PATH)
+            self._set_relative_paths_(ENVAR_PY_PACKAGES_PATH, paths)
         elif ENVAR_PY_PACKAGES_3RDPARTY_PATH in flags:
-            self._rootType = ENVAR_PY_PACKAGES_3RDPARTY_PATH
-            self._root = ValidEnvars(ENVAR_PY_PACKAGES_3RDPARTY_PATH)
+            self._set_relative_paths_(ENVAR_PY_PACKAGES_3RDPARTY_PATH, paths)
         elif ENVAR_APPDATA in flags:
-            self._rootType = ENVAR_APPDATA
-            self._root = ValidEnvars(ENVAR_APPDATA)
+            self._set_relative_paths_(ENVAR_APPDATA, paths)
         else:
-            self._root = None
+            self._paths = paths
+
+    def _set_relative_paths_(self, root_type, path_list):
+        self._rootType = root_type
+        self._root = str(ValidEnvars(root_type))
+        for path in path_list:
+            path = str(path)
+            if os.path.commonprefix([path, self._root]) == '':
+                self._paths.append(path)
+            else:
+                next_path = path[:len(self._root)]
+                self._paths.append(next_path)
 
     def toDict(self, forceAbsolute=False):
         retDict = {}
@@ -84,6 +90,18 @@ class ConfigPath(object):
     @property
     def Root(self):
         return str(self._root)
+
+    @property
+    def AbsolutePaths(self):
+        retPaths = []
+        for path in self._paths:
+            rPath = str(path)
+            if self._relativeFlag:
+                rPath = os.path.join(self.Root, rPath)
+            rPath = os.path.normpath(rPath)
+            retPaths.append(rPath)
+        return retPaths
+
 
     @property
     def Flags(self):
@@ -102,14 +120,7 @@ class ConfigPath(object):
 
     @property
     def Paths(self):
-        retPaths = []
-        for path in self._paths:
-            rPath = str(path)
-            if self._relativeFlag:
-                rPath = os.path.join(self.Root, rPath)
-            rPath = os.path.normpath(rPath)
-            retPaths.append(rPath)
-        return retPaths
+        return self._paths
 
     @property
     def relative(self):

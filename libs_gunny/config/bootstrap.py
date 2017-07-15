@@ -41,13 +41,13 @@ def GetInstalledApp(app_config):
     :return:
     """
     executables = set()
-    env = getattr(app_config, ENV_PATH_INSTALL)
+    env = app_config.GetAttrByStructName(ENV_PATH_INSTALL)
     location = config_func.GetEnvarDefaults(env)
     if location and os.path.exists(location):
         executables.add(location)
 
-    rg_pth = getattr(app_config, REG_PATH_INSTALL)
-    rg_loc = config_func.getRegKeyVal(rg_pth, getattr(app_config, REG_ENTRY_INSTALL), '64bit')
+    rg_pth = app_config.GetAttrByStructName(REG_PATH_INSTALL)
+    rg_loc = config_func.getRegKeyVal(rg_pth, app_config.GetAttrByStructName(REG_ENTRY_INSTALL), '64bit')
     path = config_func.filterPath(rg_loc[0])
     if not path:
         raise executableNotFound("Could not produce a valid executable from {}, located at {}".format(rg_pth, rg_loc))
@@ -56,13 +56,13 @@ def GetInstalledApp(app_config):
         path = os.path.dirname(path)
     if os.path.isdir(path):
         executables.add(path)
-    filePathName = os.path.join(executables.pop(), getattr(app_config, EXECUTABLE_COMMAND))
+    filePathName = os.path.join(executables.pop(), app_config.GetAttrByStructName(EXECUTABLE_COMMAND))
     return filePathName
 
 
 def GetBootStrapScript(app_config):
-    filename = getattr(app_config, BOOTSTRAP_FILE)
-    appConfigPath = getattr(app_config, APP_CONFIG_PATH)
+    filename = app_config.GetAttrByStructName(BOOTSTRAP_FILE)
+    appConfigPath = app_config.GetAttrByStructName(APP_CONFIG_PATH)
     validPaths = list()
     for path in appConfigPath.Paths:
         if os.path.exists(os.path.join(path, filename)):
@@ -70,14 +70,11 @@ def GetBootStrapScript(app_config):
     return validPaths
 
 
-#TODO: Add config based switch for non-blocking launch call.
-def BootstrapApp(app_config, non_blocking=False):
-    pathsvar = getattr(app_config, BOOTSTRAP_TYPE)
+def BootstrapApp(app_config):
+    pathsvar = app_config.GetAttrByStructName(BOOTSTRAP_TYPE)
     startPath = GetBootStrapScript(app_config)
     config_func.updateEnvironmentPath(pathsvar, startPath)
     new_env = os.environ.copy()
     dccRunTime = GetInstalledApp(app_config)
     return dccRunTime, new_env
 
-    # retCode = subprocess.call(dccRunTime, env=new_env)
-    # return retCode
