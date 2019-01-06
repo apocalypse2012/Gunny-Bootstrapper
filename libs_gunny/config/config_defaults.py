@@ -63,7 +63,7 @@ JSON_ENCODER_SPEC.add_mapping(CONFIG_INFO_TYPE)
 
 ############
 CONFIG_GUNNY_DEFAULT = {
-    COMMENT_QUALIFIER: defaults.MAX_PLAY_CONFIG_COMMENT,
+    COMMENT_QUALIFIER: defaults.PROJECT_CONFIG_COMMENT,
     APPDATA: ConfigPath(paths=["", ],
                         flags=[ENVAR_APPDATA,
                                RELATIVE_PATH_FLAG, ]),

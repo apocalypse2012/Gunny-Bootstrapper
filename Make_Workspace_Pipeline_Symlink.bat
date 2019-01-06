@@ -42,7 +42,7 @@ set _STARTSERVICE_PROC=StartService.exe
 
 IF EXIST !_STARTSERVICE_PROC! (
 	call %_STARTSERVICE_PROC% Pipeline_Loadout %_INPUT_FILE%
-)  ELSE echo ~ Maxplay Workspace could not be found
+)  ELSE echo ~ Workspace could not be found
 
 ENDLOCAL
 
