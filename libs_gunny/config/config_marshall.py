@@ -42,6 +42,7 @@ class ConfigPath(object):
 
     def __init__(self, paths=[], flags=[]):
         self._paths = []
+        self._custom_flags = None
         self._root = None
         if isinstance(paths, basestring):
             self._paths = [paths]
@@ -66,6 +67,10 @@ class ConfigPath(object):
             self._set_relative_paths_(ENVAR_APPDATA, paths)
         else:
             self._paths = paths
+            self._custom_flags = set(flags).difference([RELATIVE_PATH_FLAG, ABSOLUTE_PATH_FLAG, ENV_VAR_FLAG,
+                                                        PYTHON_PATH_FLAG, ENVAR_GUNNY_ROOT, ENVAR_TOOLS_PATH,
+                                                        ENVAR_DCC_PATH, ENVAR_PY_PACKAGES_PATH,
+                                                        ENVAR_PY_PACKAGES_3RDPARTY_PATH, ENVAR_APPDATA])
 
     def _set_relative_paths_(self, root_type, path_list):
         self._rootType = root_type
@@ -116,6 +121,8 @@ class ConfigPath(object):
             flags.append(RELATIVE_PATH_FLAG)
             if self._rootType:
                 flags.append(self._rootType)
+        if self._custom_flags is not None:
+            flags.extend(self._custom_flags)
         return flags
 
     @property

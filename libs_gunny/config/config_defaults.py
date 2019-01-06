@@ -217,305 +217,36 @@ IGNORE_CONFIG_BLOCK = [DESC_ENVAR, DESC_CONFIG_INFO, DESC_CONFIG_GUNNY]
 
 
 
-"""
-CONFIG_MAYA_2017_DEFAULT= {
-    APP_ID: None,
-    DESC_CONFIG_DCC: DESC_CONFIG_MAYA,
-    APP_VERSION: STR_2017,
-    EXECUTABLE_COMMAND: MAYA_RELATIVE_EXE_PATH,
-    BOOTSTRAP_TYPE: PYTHON_PATH,
-    BOOTSTRAP_FILE: MAYA_SETUP_FILE,
-    REG_ENTRY_INSTALL: MAYA_REG_KEY,
-    REG_PATH_INSTALL: MAYA_REG_PATH_2017,
-    ENV_PATH_INSTALL: MAYA_ENV_PATH,
-    APP_ROOT_TYPE: ENVAR_DCC_PATH,
-    APP_CONFIG_PATH: ConfigPath(paths=[MAYA_PATH_SCRIPTS],
-                                flags=[RELATIVE_PATH_FLAG]),
-    APP_PY_PACKAGES: ConfigPath(paths=[DIR_MAYA],
-                                flags=[ENVAR_DCC_PATH,
-                                       RELATIVE_PATH_FLAG,
-                                       PYTHON_PATH_FLAG]),
-    MAYA_SCRIPT_PATH: ConfigPath(paths=[MAYA_PATH_SCRIPTS_2017,
-                                        MAYA_PATH_MEL_2017,
-                                        MAYA_PATH_PYTHON_2017,
-                                        MAYA_PATH_SCRIPTS,
-                                        MAYA_PATH_MEL,
-                                        MAYA_PATH_PYTHON],
-                                   flags=[ENVAR_DCC_PATH,
-                                          RELATIVE_PATH_FLAG,
-                                          ENV_VAR_FLAG,
-                                          PYTHON_PATH_FLAG]),
-    XBMLANG_PATH: ConfigPath(paths=[MAYA_PATH_ICONS],
-                              flags=[ENVAR_DCC_PATH,
-                                     RELATIVE_PATH_FLAG,
-                                     ENV_VAR_FLAG]),
-    MAYA_PLUG_IN_PATH: ConfigPath(paths=[MAYA_PATH_PLUGINS_2017],
-                                    flags=[ENVAR_DCC_PATH,
-                                           RELATIVE_PATH_FLAG,
-                                           ENV_VAR_FLAG])
+CONFIG_PROJECT_DEFAULT = {
+    PROJECT_ROOT: ConfigPath(paths=["", ],
+                        flags=[ABSOLUTE_PATH_FLAG, ]),
+    ASSET_ROOT: ConfigPath(paths=["", ],
+                        flags=[PROJECT_ROOT, ]),
+    EXPORT_ROOT: ConfigPath(paths=["", ],
+                        flags=[ABSOLUTE_PATH_FLAG, ]),
+    EXPORT_RELATIVE: ConfigPath(paths=["", ],
+                        flags=[EXPORT_ROOT, ]),
+    ASSET_COMMON: ConfigPath(paths=["", ],
+                        flags=[ASSET_ROOT, ]),
+    DCC_PROJECT: ConfigPath(paths=["", ],
+                        flags=[ABSOLUTE_PATH_FLAG, ]),
+    MAX_FILE_TYPE: ConfigPath(paths=["b4d31e56-5b75-4020-9474-b5fcb1c6c7e7", ],
+                        flags=[DESC_CONFIG_3DSMAX, ]),
+    MAYA_FILE_TYPE: ConfigPath(paths=["a5472549-704d-4505-a50d-ef3baeee87b2", ],
+                              flags=[DESC_CONFIG_MAYA, ]),
+    BLENDER_FILE_TYPE: ConfigPath(paths=["1b986ef9-72bf-4c21-8e0c-06df8e5acaa9", ],
+                              flags=[DESC_CONFIG_BLENDER, ]),
+    # TGA_FILE_TYPE: ConfigPath(paths=["", ],
+    #                           flags=[]),
+    # BMP_FILE_TYPE: ConfigPath(paths=["", ],
+    #                           flags=[]),
+    # PNG_FILE_TYPE: ConfigPath(paths=["", ],
+    #                           flags=[]),
+    # PSD_FILE_TYPE: ConfigPath(paths=["", ],
+    #                           flags=[]),
 }
-CONFIG_MAYA_2017 = CONFIG_MAYA_TYPE(**CONFIG_MAYA_2017_DEFAULT)._asdict()
-
-
-CONFIG_MAYA_2016_DEFAULT= {
-    APP_ID: None,
-    DESC_CONFIG_DCC: DESC_CONFIG_MAYA,
-    APP_VERSION: STR_2016,
-    EXECUTABLE_COMMAND: MAYA_RELATIVE_EXE_PATH,
-    BOOTSTRAP_TYPE: PYTHON_PATH,
-    BOOTSTRAP_FILE: MAYA_SETUP_FILE,
-    REG_ENTRY_INSTALL: MAYA_REG_KEY,
-    REG_PATH_INSTALL: MAYA_REG_PATH_2016,
-    ENV_PATH_INSTALL: MAYA_ENV_PATH,
-    APP_ROOT_TYPE: ENVAR_DCC_PATH,
-    APP_CONFIG_PATH: ConfigPath(paths=[MAYA_PATH_SCRIPTS],
-                                flags=[RELATIVE_PATH_FLAG]),
-    APP_PY_PACKAGES: ConfigPath(paths=[DIR_MAYA],
-                                flags=[ENVAR_DCC_PATH,
-                                       RELATIVE_PATH_FLAG,
-                                       PYTHON_PATH_FLAG]),
-    MAYA_SCRIPT_PATH: ConfigPath(paths=[MAYA_PATH_SCRIPTS_2016,
-                                        MAYA_PATH_MEL_2016,
-                                        MAYA_PATH_PYTHON_2016,
-                                        MAYA_PATH_SCRIPTS,
-                                        MAYA_PATH_MEL,
-                                        MAYA_PATH_PYTHON],
-                                   flags=[ENVAR_DCC_PATH,
-                                          RELATIVE_PATH_FLAG,
-                                          ENV_VAR_FLAG,
-                                          PYTHON_PATH_FLAG]),
-    XBMLANG_PATH: ConfigPath(paths=[MAYA_PATH_ICONS],
-                              flags=[ENVAR_DCC_PATH,
-                                     RELATIVE_PATH_FLAG,
-                                     ENV_VAR_FLAG]),
-    MAYA_PLUG_IN_PATH: ConfigPath(paths=[MAYA_PATH_PLUGINS_2016],
-                                    flags=[ENVAR_DCC_PATH,
-                                           RELATIVE_PATH_FLAG,
-                                           ENV_VAR_FLAG])
-}
-CONFIG_MAYA_TYPE = namedtuple(CONFIG_MAYA_TYPENAME, CONFIG_DCC_TYPE._fields+(MAYA_SCRIPT_PATH, XBMLANG_PATH,
-                                                                           MAYA_PLUG_IN_PATH))
-CONFIG_MAYA_2016 = CONFIG_MAYA_TYPE(**CONFIG_MAYA_2016_DEFAULT)._asdict()
-
-
-CONFIG_MAYAPY_2016_DEFAULT = {
-    APP_ID: None,
-    DESC_CONFIG_DCC: DESC_CONFIG_MAYAPY,
-    APP_VERSION: STR_2016,
-    EXECUTABLE_COMMAND: MAYAPY_RELATIVE_EXE_PATH,
-    BOOTSTRAP_TYPE: PYTHON_PATH,
-    BOOTSTRAP_FILE: MAYA_SETUP_FILE,
-    REG_ENTRY_INSTALL: MAYA_REG_KEY,
-    REG_PATH_INSTALL: MAYA_REG_PATH,
-    ENV_PATH_INSTALL: MAYA_ENV_PATH,
-    APP_ROOT_TYPE: ENVAR_DCC_PATH,
-    APP_CONFIG_PATH: ConfigPath(paths=[MAYA_PATH_SCRIPTS],
-                                flags=[RELATIVE_PATH_FLAG]),
-    APP_PY_PACKAGES: ConfigPath(paths=[DIR_MAYA],
-                                flags=[ENVAR_DCC_PATH,
-                                       RELATIVE_PATH_FLAG,
-                                       PYTHON_PATH_FLAG]),
-    MAYA_SCRIPT_PATH: ConfigPath(paths=[MAYA_PATH_SCRIPTS_2016,
-                                        MAYA_PATH_MEL_2016,
-                                        MAYA_PATH_PYTHON_2016,
-                                        MAYA_PATH_SCRIPTS,
-                                        MAYA_PATH_MEL,
-                                        MAYA_PATH_PYTHON],
-                                   flags=[ENVAR_DCC_PATH,
-                                          RELATIVE_PATH_FLAG,
-                                          ENV_VAR_FLAG,
-                                          PYTHON_PATH_FLAG]),
-    XBMLANG_PATH: ConfigPath(paths=[MAYA_PATH_ICONS],
-                              flags=[ENVAR_DCC_PATH,
-                                     RELATIVE_PATH_FLAG,
-                                     ENV_VAR_FLAG]),
-    MAYA_PLUG_IN_PATH: ConfigPath(paths=[MAYA_PATH_PLUGINS_2016],
-                                    flags=[ENVAR_DCC_PATH,
-                                           RELATIVE_PATH_FLAG,
-                                           ENV_VAR_FLAG])
-}
-CONFIG_MAYAPY_2016 = CONFIG_MAYA_TYPE(**CONFIG_MAYAPY_2016_DEFAULT)._asdict()
-
-
-CONFIG_MAYA_2015_DEFAULT= {
-    APP_ID: None,
-    DESC_CONFIG_DCC: DESC_CONFIG_MAYA,
-    APP_VERSION: '2015',
-    EXECUTABLE_COMMAND: 'bin\\maya.exe',
-    BOOTSTRAP_TYPE: "PYTHONPATH",
-    BOOTSTRAP_FILE: "userSetup.py",
-    REG_ENTRY_INSTALL: 'MAYA_INSTALL_LOCATION',
-    REG_PATH_INSTALL: 'SOFTWARE\\Autodesk\\Maya\\2015\\Setup\\InstallPath',
-    ENV_PATH_INSTALL: 'MAYA_LOCATION',
-    APP_ROOT_TYPE: ENVAR_DCC_PATH,
-    APP_CONFIG_PATH: ConfigPath(paths=["Maya\\scripts"],
-                                flags=[ENVAR_DCC_PATH,
-                                       RELATIVE_PATH_FLAG]),
-    APP_PY_PACKAGES: ConfigPath(paths=["Maya"],
-                                flags=[ENVAR_DCC_PATH,
-                                       RELATIVE_PATH_FLAG,
-                                       PYTHON_PATH_FLAG]),
-    "MAYA_SCRIPT_PATH": ConfigPath(paths=["Maya\\scripts"],
-                                   flags=[ENVAR_DCC_PATH,
-                                          RELATIVE_PATH_FLAG,
-                                          ENV_VAR_FLAG]),
-    "XBMLANGPATH": ConfigPath(paths=["Maya\\icons"],
-                              flags=[ENVAR_DCC_PATH,
-                                     RELATIVE_PATH_FLAG,
-                                     ENV_VAR_FLAG]),
-    "MAYA_PLUG_IN_PATH": ConfigPath(paths=["Maya\\2015\\plugins"],
-                                    flags=[ENVAR_DCC_PATH,
-                                           RELATIVE_PATH_FLAG,
-                                           ENV_VAR_FLAG])
-}
-CONFIG_MAYA_2015 = CONFIG_MAYA_TYPE(**CONFIG_MAYA_2015_DEFAULT)._asdict()
-
-
-CONFIG_MAYA_2014_DEFAULT= {
-    APP_ID: None,
-    DESC_CONFIG_DCC: DESC_CONFIG_MAYA,
-    APP_VERSION: '2014',
-    EXECUTABLE_COMMAND: 'bin\\maya.exe',
-    BOOTSTRAP_TYPE: "PYTHONPATH",
-    BOOTSTRAP_FILE: "userSetup.py",
-    REG_ENTRY_INSTALL: 'MAYA_INSTALL_LOCATION',
-    REG_PATH_INSTALL: 'SOFTWARE\\Autodesk\\Maya\\2014\\Setup\\InstallPath',
-    ENV_PATH_INSTALL: 'MAYA_LOCATION',
-    APP_ROOT_TYPE: ENVAR_DCC_PATH,
-    APP_CONFIG_PATH: ConfigPath(paths=["Maya\\scripts"],
-                                flags=[ENVAR_DCC_PATH,
-                                       RELATIVE_PATH_FLAG]),
-    APP_PY_PACKAGES: ConfigPath(paths=["Maya"],
-                                flags=[ENVAR_DCC_PATH,
-                                       RELATIVE_PATH_FLAG,
-                                       PYTHON_PATH_FLAG]),
-    "MAYA_SCRIPT_PATH": ConfigPath(paths=["Maya\\scripts"],
-                                   flags=[ENVAR_DCC_PATH,
-                                          RELATIVE_PATH_FLAG,
-                                          ENV_VAR_FLAG]),
-    "XBMLANGPATH": ConfigPath(paths=["Maya\\icons"],
-                              flags=[ENVAR_DCC_PATH,
-                                     RELATIVE_PATH_FLAG,
-                                     ENV_VAR_FLAG]),
-    "MAYA_PLUG_IN_PATH": ConfigPath(paths=["Maya\\2014\\plugins"],
-                                    flags=[ENVAR_DCC_PATH,
-                                           RELATIVE_PATH_FLAG,
-                                           ENV_VAR_FLAG])
-}
-CONFIG_MAYA_2014 = CONFIG_MAYA_TYPE(**CONFIG_MAYA_2014_DEFAULT)._asdict()
-
-
-CONFIG_3DSMAX_2018_DEFAULT = {
-    APP_ID: None,
-    DESC_CONFIG_DCC: DESC_CONFIG_3DSMAX,
-    APP_VERSION: '20000',
-    EXECUTABLE_COMMAND: '3dsmax.exe -U PythonHost startup.py',
-    BOOTSTRAP_TYPE: "path",
-    BOOTSTRAP_FILE: "startup.ms",
-    REG_ENTRY_INSTALL: 'Installdir',
-    REG_PATH_INSTALL: 'SOFTWARE\\Autodesk\\3dsMax\\20.0',
-    ENV_PATH_INSTALL: 'ADSK_3DSMAX_X64_2018',
-    APP_ROOT_TYPE: ENVAR_DCC_PATH,
-    APP_CONFIG_PATH: ConfigPath(paths=["Max\\scripts",
-                                       "Max\\2018\\scripts"],
-                                flags=[ENVAR_DCC_PATH,
-                                       RELATIVE_PATH_FLAG]),
-    APP_PY_PACKAGES: ConfigPath(paths=["Max",
-                                       "Max\\2018"],
-                                flags=[ENVAR_DCC_PATH,
-                                       RELATIVE_PATH_FLAG,
-                                       PYTHON_PATH_FLAG]),
-    MAX_PLUGIN_PATH: ConfigPath(paths=["Max\\2018\\plugins"],
-                                     flags=[ENVAR_DCC_PATH,
-                                            RELATIVE_PATH_FLAG,
-                                            ENV_VAR_FLAG])
-}
-CONFIG_3DSMAX_TYPE = namedtuple(CONFIG_3DSMAX_TYPENAME, CONFIG_DCC_TYPE._fields+(MAX_PLUGIN_PATH,))
-CONFIG_3DSMAX_2018 = CONFIG_3DSMAX_TYPE(**CONFIG_3DSMAX_2018_DEFAULT)._asdict()
-JSON_ENCODER_SPEC.add_mapping(CONFIG_3DSMAX_TYPE)
-
-
-CONFIG_3DSMAX_2016_DEFAULT = {
-    APP_ID: None,
-    DESC_CONFIG_DCC: DESC_CONFIG_3DSMAX,
-    APP_VERSION: '18000',
-    EXECUTABLE_COMMAND: '3dsmax.exe -U PythonHost startup.py',
-    BOOTSTRAP_TYPE: "path",
-    BOOTSTRAP_FILE: "startup.ms",
-    REG_ENTRY_INSTALL: 'Installdir',
-    REG_PATH_INSTALL: 'SOFTWARE\\Autodesk\\3dsMax\\18.0',
-    ENV_PATH_INSTALL: 'ADSK_3DSMAX_X64_2016',
-    APP_ROOT_TYPE: ENVAR_DCC_PATH,
-    APP_CONFIG_PATH: ConfigPath(paths=["Max\\scripts",
-                                       "Max\\2016\\scripts"],
-                                flags=[ENVAR_DCC_PATH,
-                                       RELATIVE_PATH_FLAG]),
-    APP_PY_PACKAGES: ConfigPath(paths=["Max",
-                                       "Max\\2016"],
-                                flags=[ENVAR_DCC_PATH,
-                                       RELATIVE_PATH_FLAG,
-                                       PYTHON_PATH_FLAG]),
-    MAX_PLUGIN_PATH: ConfigPath(paths=["Max\\2016\\plugins"],
-                                     flags=[ENVAR_DCC_PATH,
-                                            RELATIVE_PATH_FLAG,
-                                            ENV_VAR_FLAG])
-}
-CONFIG_3DSMAX_TYPE = namedtuple(CONFIG_3DSMAX_TYPENAME, CONFIG_DCC_TYPE._fields+(MAX_PLUGIN_PATH,))
-CONFIG_3DSMAX_2016 = CONFIG_3DSMAX_TYPE(**CONFIG_3DSMAX_2016_DEFAULT)._asdict()
-
-
-CONFIG_3DSMAX_2015_DEFAULT = {
-    APP_ID: None,
-    DESC_CONFIG_DCC: DESC_CONFIG_3DSMAX,
-    APP_VERSION: '17000',
-    EXECUTABLE_COMMAND: '3dsmax.exe -U PythonHost startup.py',
-    BOOTSTRAP_TYPE: "path",
-    BOOTSTRAP_FILE: "startup.ms",
-    REG_ENTRY_INSTALL: 'Installdir',
-    REG_PATH_INSTALL: 'SOFTWARE\\Autodesk\\3dsMax\\17.0',
-    ENV_PATH_INSTALL: 'ADSK_3DSMAX_X64_2015',
-    APP_ROOT_TYPE: ENVAR_DCC_PATH,
-    APP_CONFIG_PATH: ConfigPath(paths=["Max\\scripts"],
-                                flags=[ENVAR_DCC_PATH,
-                                       RELATIVE_PATH_FLAG]),
-    APP_PY_PACKAGES: ConfigPath(paths=["Max,Max\\2015"],
-                                flags=[ENVAR_DCC_PATH,
-                                       RELATIVE_PATH_FLAG,
-                                       PYTHON_PATH_FLAG]),
-    "MAX_PLUGIN_PATH": ConfigPath(paths=["Max\\2015\\plugins"],
-                                  flags=[ENVAR_DCC_PATH,
-                                         RELATIVE_PATH_FLAG,
-                                         ENV_VAR_FLAG])
-}
-CONFIG_3DSMAX_2015 = CONFIG_3DSMAX_TYPE(**CONFIG_3DSMAX_2015_DEFAULT)._asdict()
-
-
-CONFIG_BLENDER_DEFAULT = {
-    APP_ID: None,
-    DESC_CONFIG_DCC: DESC_CONFIG_BLENDER,
-    APP_VERSION: '',
-    EXECUTABLE_COMMAND: 'blender.exe',
-    BOOTSTRAP_TYPE: "BLENDER_USER_SCRIPTS",
-    BOOTSTRAP_FILE: "startup\\startup.py",
-    REG_ENTRY_INSTALL: '',
-    REG_PATH_INSTALL: 'SOFTWARE\\Classes\\blendfile\\shell\\open\\command',
-    ENV_PATH_INSTALL: '',
-    APP_ROOT_TYPE: ENVAR_DCC_PATH,
-    APP_CONFIG_PATH: ConfigPath(paths=["Blender\\scripts"],
-                                flags=[ENVAR_DCC_PATH,
-                                       RELATIVE_PATH_FLAG]),
-    APP_PY_PACKAGES: ConfigPath(paths=["Blender"],
-                                flags=[ENVAR_DCC_PATH,
-                                       RELATIVE_PATH_FLAG,
-                                       PYTHON_PATH_FLAG])
-}
-CONFIG_BLENDER = CONFIG_DCC_TYPE(**CONFIG_BLENDER_DEFAULT)._asdict()
-"""
-
-
-# CONFIG_USER_DEFAULTS = defaults.USER_CONFIG_DEFAULTS
-# CONFIG_USER_TYPE = namedtuple('CONFIG_USER_TYPE', (COMMENT_QUALIFIER, TEMPLATE_QUALIFIER, TEMPLATE_QUALIFIER+'1',
-#                                                        TEMPLATE_QUALIFIER+'2', TEMPLATE_QUALIFIER+'3'))
-# CONFIG_USER = CONFIG_USER_TYPE(**CONFIG_USER_DEFAULTS)._asdict()
-
-
+CONFIG_PROJECT_TYPE = namedtuple(CONFIG_PROJECT_TYPENAME, (PROJECT_ROOT, ASSET_ROOT, EXPORT_ROOT, EXPORT_RELATIVE,
+                                                           ASSET_COMMON, DCC_PROJECT, MAX_FILE_TYPE, MAYA_FILE_TYPE,
+                                                           BLENDER_FILE_TYPE))
+CONFIG_PROJECT = CONFIG_PROJECT_TYPE(**CONFIG_PROJECT_DEFAULT)._asdict()
+JSON_ENCODER_SPEC.add_mapping(CONFIG_PROJECT_TYPE)

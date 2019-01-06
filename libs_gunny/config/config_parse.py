@@ -193,7 +193,7 @@ class Config_Parser(object):
         if fetch_name in self._naming_spec:
             return self._naming_spec[fetch_name]
 
-    def SaveConfig(self):
+    def SaveConfig(self, *args, **kwargs):
         """
         Save the current configuration state.
         :return:
@@ -220,9 +220,9 @@ class Config_Parser(object):
                       sort_keys=False,
                       indent=4)
 
-    def _load_file_config(self):
+    def _load_file_config(self, *args, **kwargs):
         """
-        Load configuration data from file.
+        Load configuration data from file. Method may be overridden with a different signature.
         :return: loaded configuration data as an OrderedDict()
         """
         config_value = getattr(self, APPDATA)
